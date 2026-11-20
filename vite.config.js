@@ -8,9 +8,9 @@ import { defineConfig } from 'vite'
 
 const root = path.dirname(fileURLToPath(import.meta.url))
 
-// Serve ./photos at /photos during `npm run dev` and `npm run preview`.
-// The folder is NOT copied into dist/ — upload it to DreamHost separately
-// (dustinevans.net/photos/), so deploys don't re-upload every photo.
+// Serve ./photos at /photos during `npm run dev` and `npm run preview`, for any
+// photo that hasn't been uploaded to Cloudinary yet. The folder is NOT copied
+// into dist/ — the live site loads photos from Cloudinary.
 function servePhotos() {
   const dir = path.join(root, 'photos')
   const types = {

@@ -63,17 +63,16 @@ if (python.status !== 0) {
 }
 const images = JSON.parse(python.stdout)
 
-// Photo previews live with the photos: photos/<album>/share/<name>.jpg
+// Photo previews are made by process_photos.py and hosted on Cloudinary.
 const missingPhotos = []
-const photoImage = (src) => {
-  const url = src.replace(/^\/photos\/(.+)\/([^/]+)\.webp$/, '/photos/$1/share/$2.jpg')
-  if (fs.existsSync(path.join(root, url))) return url
-  missingPhotos.push(src)
+const photoImage = (photo) => {
+  if (photo?.share?.startsWith('https://')) return photo.share
+  missingPhotos.push(photo?.src)
   return images.card
 }
 
 // ── Pages ───────────────────────────────────────────────────────────────
-const coverOf = (album) => album.cover || album.photos[0].src
+const coverOf = (album) => album.photos.find((p) => p.thumb === album.cover) || album.photos[0]
 const firstAlbum = photography.albums[0]
 
 const pages = [
@@ -109,7 +108,7 @@ const pages = [
         path: `${albumPath}/${photo.name}`,
         title: `${photo.caption ? `${photo.caption} · ` : ''}${album.title} · Photography · ${fullName}`,
         description: `Photo by ${fullName}, from the ${album.title} gallery.`,
-        image: photoImage(photo.src),
+        image: photoImage(photo),
         alt: photo.alt,
       })),
     ]
@@ -124,7 +123,7 @@ function render(page) {
   const url = `${site}${page.path === '/' ? '/' : `${page.path}/`}`
   const title = escapeHtml(page.title)
   const description = escapeHtml(shorten(page.description))
-  const image = escapeHtml(`${site}${encodeURI(page.image)}`)
+  const image = escapeHtml(page.image.startsWith('https://') ? page.image : `${site}${encodeURI(page.image)}`)
   const alt = escapeHtml(page.alt)
   const tags = [
     `<link rel="canonical" href="${escapeHtml(url)}" />`,
@@ -157,5 +156,5 @@ for (const page of pages) {
 
 console.log(`Link previews: ${pages.length} pages, ${Object.keys(images).length} images in dist/share/`)
 if (missingPhotos.length) {
-  console.warn(`Warning: ${missingPhotos.length} photo previews are missing. Run: npm run photos`)
+  console.warn(`Warning: ${missingPhotos.length} photos have no Cloudinary preview image. Run: npm run photos (with keys in .env)`)
 }

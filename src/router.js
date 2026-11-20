@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 
 // Tiny client-side router: no dependencies, works with real URLs like /projects.
-// (DreamHost needs public/.htaccess so refreshing /projects serves index.html.)
+// (The host needs a rewrite of /* to /index.html so refreshing /projects works.)
 
 const listeners = new Set()
 const notify = () => listeners.forEach((l) => l())

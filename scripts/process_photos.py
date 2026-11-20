@@ -9,6 +9,11 @@ Writes  photos/<album-slug>/<name>.webp          (full size, long edge 2400px)
         photos/<album-slug>/share/<name>.jpg     (1200x630 link preview image)
         src/data/photos.generated.js             (list the site reads automatically)
 
+Then uploads new/changed web copies to Cloudinary and puts their URLs in
+photos.generated.js, so the deployed site needs no photo files of its own.
+Cloudinary keys go in .env (see .env.example). Without them, the site uses
+local /photos/... paths, which only work under `npm run dev`.
+
 - Every folder in photos-originals becomes a gallery (e.g. "Night Sky" →
   /photography/night-sky). Folders with no images are left off the site.
   Folders starting with "_" or "." are ignored.
@@ -19,13 +24,14 @@ Writes  photos/<album-slug>/<name>.webp          (full size, long edge 2400px)
 - Only new or changed photos are re-processed. Web copies whose original was
   deleted are removed.
 
-Requires Pillow:  python -m pip install Pillow
+Requires:  python -m pip install -r requirements.txt
 """
 
 import json
 import os
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
@@ -40,6 +46,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "photos-originals"
 OUT = ROOT / "photos"
 DATA = ROOT / "src" / "data" / "photos.generated.js"
+MANIFEST = OUT / ".cloudinary.json"  # what's already on Cloudinary (local only)
 
 FULL_EDGE = 2400
 THUMB_EDGE = 900
@@ -91,13 +98,120 @@ def save_share(im, dest):
     back.save(dest, "JPEG", quality=SHARE_QUALITY, optimize=True, progressive=True)  # no metadata
 
 
+def load_env():
+    env = ROOT / ".env"
+    if not env.exists():
+        return
+    for line in env.read_text(encoding="utf8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+
+
+def cloudinary_client():
+    """Configured cloudinary module, or None if no keys are set."""
+    load_env()
+    url = os.environ.get("CLOUDINARY_URL")
+    name = os.environ.get("CLOUDINARY_CLOUD_NAME")
+    key = os.environ.get("CLOUDINARY_API_KEY")
+    secret = os.environ.get("CLOUDINARY_API_SECRET")
+    if not url and not (name and key and secret):
+        return None
+    try:
+        import cloudinary
+        import cloudinary.uploader
+    except ImportError:
+        print("Cloudinary keys found but the SDK isn't installed. Run:  python -m pip install -r requirements.txt")
+        return None
+    if url:
+        cloudinary.config(cloudinary_url=url, secure=True)
+    else:
+        cloudinary.config(cloud_name=name, api_key=key, api_secret=secret, secure=True)
+    return cloudinary
+
+
+def sync_cloudinary(local_urls):
+    """Upload new/changed files, delete removed ones. Returns {local url: cloudinary url}."""
+    manifest = {}
+    if MANIFEST.exists():
+        try:
+            manifest = json.loads(MANIFEST.read_text(encoding="utf8"))
+        except Exception:
+            manifest = {}
+
+    def stamp(path):
+        st = path.stat()
+        return f"{st.st_size}:{st.st_mtime_ns}"
+
+    files = {u: OUT / u[len("/photos/"):] for u in local_urls}
+    up_to_date = {u: manifest[u]["url"] for u, f in files.items()
+                  if u in manifest and manifest[u].get("stamp") == stamp(f)}
+
+    cloud = cloudinary_client()
+    if cloud is None:
+        if len(up_to_date) < len(files):
+            print(f"\nNot uploading {len(files) - len(up_to_date)} files: no Cloudinary keys in .env (see .env.example).")
+        return up_to_date
+
+    folder = os.environ.get("CLOUDINARY_FOLDER", "dustinevansdotnet").strip("/")
+
+    def upload(item):
+        local_url, path = item
+        rel = local_url[len("/photos/"):].rsplit(".", 1)[0]  # outdoors/thumbs/streetcar
+        public_id = f"{folder}/{rel}"
+        try:
+            res = cloud.uploader.upload(
+                str(path),
+                public_id=public_id,
+                asset_folder=f"{folder}/{rel.rsplit('/', 1)[0]}",
+                resource_type="image",
+                overwrite=True,
+                invalidate=True,
+            )
+        except Exception as e:
+            print(f"  ✗ upload failed: {rel}  ({e})")
+            return local_url, None
+        print(f"  ↑ {rel}")
+        return local_url, {"url": res["secure_url"], "public_id": res["public_id"], "stamp": stamp(path)}
+
+    todo = [(u, f) for u, f in files.items() if u not in up_to_date]
+    failed = 0
+    if todo:
+        print(f"\nUploading {len(todo)} files to Cloudinary ({folder}/)…")
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            for local_url, entry in pool.map(upload, todo):
+                if entry:
+                    manifest[local_url] = entry
+                else:
+                    failed += 1
+
+    gone = [u for u in manifest if u not in files]
+    for u in gone:
+        try:
+            cloud.uploader.destroy(manifest[u]["public_id"], resource_type="image", invalidate=True)
+            print(f"  ✗ removed from Cloudinary: {u}")
+            del manifest[u]
+        except Exception as e:
+            print(f"  ! couldn't delete {u} from Cloudinary ({e})")
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    MANIFEST.write_text(json.dumps(manifest, indent=1), encoding="utf8")
+    if failed:
+        print(f"Warning: {failed} uploads failed; those photos use local paths until the next run.")
+    return {u: manifest[u]["url"] for u in files if u in manifest}
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles
     except Exception:
         pass
     if not SRC.exists():
-        sys.exit(f"Missing folder: {SRC}")
+        # Originals only live on the dev machine (they're gitignored), so on a
+        # build server keep the committed photos.generated.js as-is.
+        print(f"No {SRC.name}/ folder here; skipping photo processing.")
+        return
 
     old = []
     if DATA.exists():
@@ -107,7 +221,7 @@ def main():
         except Exception:
             old = []
     old_lists = [a["photos"] for a in old] if isinstance(old, list) else list(old.values())
-    old_by_src = {p["src"]: p for photos in old_lists for p in photos}
+    old_by_key = {(a["slug"], p["name"]): p for a in (old if isinstance(old, list) else []) for p in a["photos"]}
 
     result, keep = [], set()
     made = skipped = 0
@@ -130,10 +244,14 @@ def main():
             full = OUT / album / f"{name}.webp"
             thumb = OUT / album / "thumbs" / f"{name}.webp"
             share = OUT / album / "share" / f"{name}.jpg"
-            src_url = f"/photos/{album}/{name}.webp"
+            local = {
+                "src": f"/photos/{album}/{name}.webp",
+                "thumb": f"/photos/{album}/thumbs/{name}.webp",
+                "share": f"/photos/{album}/share/{name}.jpg",
+            }
             keep.update({full.resolve(), thumb.resolve(), share.resolve()})
 
-            prev = old_by_src.get(src_url)
+            prev = old_by_key.get((album, name))
             fresh = (
                 prev
                 and full.exists()
@@ -142,7 +260,7 @@ def main():
                 and full.stat().st_mtime >= f.stat().st_mtime
             )
             if fresh:
-                entries.append(prev)
+                entries.append({**prev, "local": local})
                 skipped += 1
                 continue
 
@@ -158,8 +276,7 @@ def main():
             print(f"  ✓ {album}/{name}  ({w}x{h})")
             entries.append({
                 "name": name,
-                "src": src_url,
-                "thumb": f"/photos/{album}/thumbs/{name}.webp",
+                "local": local,
                 "ratio": f"{w} / {h}",
                 "group": group,
                 "date": date.strftime("%Y-%m-%d"),
@@ -182,6 +299,16 @@ def main():
         for d in sorted((d for d in OUT.rglob("*") if d.is_dir()), key=lambda d: len(d.parts), reverse=True):
             if not any(d.iterdir()):
                 d.rmdir()
+
+    # point the site at Cloudinary (or local paths for anything not uploaded)
+    local_urls = [u for a in result for p in a["photos"] for u in p["local"].values()]
+    hosted = sync_cloudinary(local_urls)
+    for a in result:
+        for i, p in enumerate(a["photos"]):
+            local = p.pop("local")
+            urls = {k: hosted.get(v, v) for k, v in local.items()}
+            rest = {k: v for k, v in p.items() if k not in ("name", "src", "thumb", "share")}
+            a["photos"][i] = {"name": p["name"], **urls, **rest}
 
     DATA.parent.mkdir(parents=True, exist_ok=True)
     DATA.write_text(

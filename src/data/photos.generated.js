@@ -9,6 +9,7 @@ export default [
         "name": "img-1482",
         "src": "/photos/clearly-guilty/img-1482.webp",
         "thumb": "/photos/clearly-guilty/thumbs/img-1482.webp",
+        "share": "/photos/clearly-guilty/share/img-1482.jpg",
         "ratio": "2400 / 1350",
         "group": "",
         "date": "2020-03-01"
@@ -17,6 +18,7 @@ export default [
         "name": "img-9586",
         "src": "/photos/clearly-guilty/img-9586.webp",
         "thumb": "/photos/clearly-guilty/thumbs/img-9586.webp",
+        "share": "/photos/clearly-guilty/share/img-9586.jpg",
         "ratio": "1350 / 2400",
         "group": "",
         "date": "2019-08-22"
@@ -25,6 +27,7 @@ export default [
         "name": "img-9645",
         "src": "/photos/clearly-guilty/img-9645.webp",
         "thumb": "/photos/clearly-guilty/thumbs/img-9645.webp",
+        "share": "/photos/clearly-guilty/share/img-9645.jpg",
         "ratio": "2400 / 1800",
         "group": "",
         "date": "2019-08-22"
@@ -39,6 +42,7 @@ export default [
         "name": "dsc00281",
         "src": "/photos/conventions/dsc00281.webp",
         "thumb": "/photos/conventions/thumbs/dsc00281.webp",
+        "share": "/photos/conventions/share/dsc00281.jpg",
         "ratio": "1350 / 2400",
         "group": "",
         "date": "2022-04-02"
@@ -47,6 +51,7 @@ export default [
         "name": "dsc00357",
         "src": "/photos/conventions/dsc00357.webp",
         "thumb": "/photos/conventions/thumbs/dsc00357.webp",
+        "share": "/photos/conventions/share/dsc00357.jpg",
         "ratio": "1350 / 2400",
         "group": "",
         "date": "2022-04-02"
@@ -55,6 +60,7 @@ export default [
         "name": "kcroyals",
         "src": "/photos/conventions/kcroyals.webp",
         "thumb": "/photos/conventions/thumbs/kcroyals.webp",
+        "share": "/photos/conventions/share/kcroyals.jpg",
         "ratio": "1080 / 860",
         "group": "",
         "date": "2019-04-15"
@@ -69,6 +75,7 @@ export default [
         "name": "sb01-12x24",
         "src": "/photos/outdoors/sb01-12x24.webp",
         "thumb": "/photos/outdoors/thumbs/sb01-12x24.webp",
+        "share": "/photos/outdoors/share/sb01-12x24.jpg",
         "ratio": "2400 / 1200",
         "group": "",
         "date": "2024-02-12"
@@ -77,6 +84,7 @@ export default [
         "name": "img-7626",
         "src": "/photos/outdoors/img-7626.webp",
         "thumb": "/photos/outdoors/thumbs/img-7626.webp",
+        "share": "/photos/outdoors/share/img-7626.jpg",
         "ratio": "1280 / 720",
         "group": "",
         "date": "2020-07-15"
@@ -85,6 +93,7 @@ export default [
         "name": "img-8511",
         "src": "/photos/outdoors/img-8511.webp",
         "thumb": "/photos/outdoors/thumbs/img-8511.webp",
+        "share": "/photos/outdoors/share/img-8511.jpg",
         "ratio": "2400 / 1600",
         "group": "",
         "date": "2019-06-01"
@@ -93,6 +102,7 @@ export default [
         "name": "streetcar",
         "src": "/photos/outdoors/streetcar.webp",
         "thumb": "/photos/outdoors/thumbs/streetcar.webp",
+        "share": "/photos/outdoors/share/streetcar.jpg",
         "ratio": "2400 / 1600",
         "group": "",
         "date": "2019-01-13"
@@ -101,6 +111,7 @@ export default [
         "name": "full-img-7789",
         "src": "/photos/outdoors/full-img-7789.webp",
         "thumb": "/photos/outdoors/thumbs/full-img-7789.webp",
+        "share": "/photos/outdoors/share/full-img-7789.jpg",
         "ratio": "1573 / 2400",
         "group": "",
         "date": "2018-11-24"
@@ -109,6 +120,7 @@ export default [
         "name": "img-7641",
         "src": "/photos/outdoors/img-7641.webp",
         "thumb": "/photos/outdoors/thumbs/img-7641.webp",
+        "share": "/photos/outdoors/share/img-7641.jpg",
         "ratio": "1350 / 2400",
         "group": "",
         "date": "2018-07-13"
@@ -117,6 +129,7 @@ export default [
         "name": "dsc04509",
         "src": "/photos/outdoors/dsc04509.webp",
         "thumb": "/photos/outdoors/thumbs/dsc04509.webp",
+        "share": "/photos/outdoors/share/dsc04509.jpg",
         "ratio": "2400 / 1350",
         "group": "",
         "date": "2014-01-01"
@@ -125,6 +138,7 @@ export default [
         "name": "untitled-panorama-2",
         "src": "/photos/outdoors/untitled-panorama-2.webp",
         "thumb": "/photos/outdoors/thumbs/untitled-panorama-2.webp",
+        "share": "/photos/outdoors/share/untitled-panorama-2.jpg",
         "ratio": "2400 / 889",
         "group": "",
         "date": "2014-01-01"
@@ -139,6 +153,7 @@ export default [
         "name": "caitlyn-img-3924",
         "src": "/photos/people/caitlyn-img-3924.webp",
         "thumb": "/photos/people/thumbs/caitlyn-img-3924.webp",
+        "share": "/photos/people/share/caitlyn-img-3924.jpg",
         "ratio": "2400 / 2185",
         "group": "caitlyn",
         "date": "2021-03-28"
@@ -147,6 +162,7 @@ export default [
         "name": "caitlyn-img-3944",
         "src": "/photos/people/caitlyn-img-3944.webp",
         "thumb": "/photos/people/thumbs/caitlyn-img-3944.webp",
+        "share": "/photos/people/share/caitlyn-img-3944.jpg",
         "ratio": "1350 / 2400",
         "group": "caitlyn",
         "date": "2021-03-28"
@@ -155,6 +171,7 @@ export default [
         "name": "caitlyn-img-3966-gz",
         "src": "/photos/people/caitlyn-img-3966-gz.webp",
         "thumb": "/photos/people/thumbs/caitlyn-img-3966-gz.webp",
+        "share": "/photos/people/share/caitlyn-img-3966-gz.jpg",
         "ratio": "2400 / 1600",
         "group": "caitlyn",
         "date": "2021-03-28"
@@ -163,6 +180,7 @@ export default [
         "name": "julien-img-0678",
         "src": "/photos/people/julien-img-0678.webp",
         "thumb": "/photos/people/thumbs/julien-img-0678.webp",
+        "share": "/photos/people/share/julien-img-0678.jpg",
         "ratio": "1800 / 2400",
         "group": "julien",
         "date": "2020-01-25"
@@ -171,6 +189,7 @@ export default [
         "name": "julien-img-0383",
         "src": "/photos/people/julien-img-0383.webp",
         "thumb": "/photos/people/thumbs/julien-img-0383.webp",
+        "share": "/photos/people/share/julien-img-0383.jpg",
         "ratio": "1350 / 2400",
         "group": "julien",
         "date": "2019-12-02"
@@ -179,6 +198,7 @@ export default [
         "name": "faith-dsc03296",
         "src": "/photos/people/faith-dsc03296.webp",
         "thumb": "/photos/people/thumbs/faith-dsc03296.webp",
+        "share": "/photos/people/share/faith-dsc03296.jpg",
         "ratio": "2400 / 1350",
         "group": "faith",
         "date": "2014-02-04"
@@ -187,6 +207,7 @@ export default [
         "name": "faith-dsc03331",
         "src": "/photos/people/faith-dsc03331.webp",
         "thumb": "/photos/people/thumbs/faith-dsc03331.webp",
+        "share": "/photos/people/share/faith-dsc03331.jpg",
         "ratio": "2400 / 1350",
         "group": "faith",
         "date": "2014-02-04"
@@ -195,6 +216,7 @@ export default [
         "name": "faith-dsc03945",
         "src": "/photos/people/faith-dsc03945.webp",
         "thumb": "/photos/people/thumbs/faith-dsc03945.webp",
+        "share": "/photos/people/share/faith-dsc03945.jpg",
         "ratio": "1917 / 2400",
         "group": "faith",
         "date": "2014-01-01"
@@ -203,6 +225,7 @@ export default [
         "name": "julien-dsc01391",
         "src": "/photos/people/julien-dsc01391.webp",
         "thumb": "/photos/people/thumbs/julien-dsc01391.webp",
+        "share": "/photos/people/share/julien-dsc01391.jpg",
         "ratio": "2400 / 1350",
         "group": "julien",
         "date": "2014-01-01"
@@ -217,6 +240,7 @@ export default [
         "name": "515048030-1333040408407372-3280398228674557717-n",
         "src": "/photos/vehicles/515048030-1333040408407372-3280398228674557717-n.webp",
         "thumb": "/photos/vehicles/thumbs/515048030-1333040408407372-3280398228674557717-n.webp",
+        "share": "/photos/vehicles/share/515048030-1333040408407372-3280398228674557717-n.jpg",
         "ratio": "2048 / 1152",
         "group": "",
         "date": "2026-11-17"
@@ -225,6 +249,7 @@ export default [
         "name": "img-4514",
         "src": "/photos/vehicles/img-4514.webp",
         "thumb": "/photos/vehicles/thumbs/img-4514.webp",
+        "share": "/photos/vehicles/share/img-4514.jpg",
         "ratio": "2400 / 1350",
         "group": "",
         "date": "2021-06-06"
@@ -233,6 +258,7 @@ export default [
         "name": "img-4533",
         "src": "/photos/vehicles/img-4533.webp",
         "thumb": "/photos/vehicles/thumbs/img-4533.webp",
+        "share": "/photos/vehicles/share/img-4533.jpg",
         "ratio": "2400 / 1350",
         "group": "",
         "date": "2021-06-06"
@@ -241,6 +267,7 @@ export default [
         "name": "img-2172",
         "src": "/photos/vehicles/img-2172.webp",
         "thumb": "/photos/vehicles/thumbs/img-2172.webp",
+        "share": "/photos/vehicles/share/img-2172.jpg",
         "ratio": "2030 / 2400",
         "group": "",
         "date": "2020-03-07"
@@ -249,6 +276,7 @@ export default [
         "name": "img-2188",
         "src": "/photos/vehicles/img-2188.webp",
         "thumb": "/photos/vehicles/thumbs/img-2188.webp",
+        "share": "/photos/vehicles/share/img-2188.jpg",
         "ratio": "2400 / 1543",
         "group": "",
         "date": "2020-03-07"
@@ -257,6 +285,7 @@ export default [
         "name": "dsc03167",
         "src": "/photos/vehicles/dsc03167.webp",
         "thumb": "/photos/vehicles/thumbs/dsc03167.webp",
+        "share": "/photos/vehicles/share/dsc03167.jpg",
         "ratio": "2400 / 1351",
         "group": "",
         "date": "2014-02-03"
@@ -265,6 +294,7 @@ export default [
         "name": "dsc03191",
         "src": "/photos/vehicles/dsc03191.webp",
         "thumb": "/photos/vehicles/thumbs/dsc03191.webp",
+        "share": "/photos/vehicles/share/dsc03191.jpg",
         "ratio": "2400 / 1350",
         "group": "",
         "date": "2014-02-03"
@@ -273,6 +303,7 @@ export default [
         "name": "dsc00073",
         "src": "/photos/vehicles/dsc00073.webp",
         "thumb": "/photos/vehicles/thumbs/dsc00073.webp",
+        "share": "/photos/vehicles/share/dsc00073.jpg",
         "ratio": "2400 / 1350",
         "group": "",
         "date": "2014-01-01"

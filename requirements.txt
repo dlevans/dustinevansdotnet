@@ -1,0 +1,2 @@
+Pillow>=12.2.0
+cloudinary>=1.44

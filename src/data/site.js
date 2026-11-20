@@ -398,7 +398,8 @@ export const projects = [
 //       e.g. photos-originals/people/caitlyn/ → caption "Caitlyn")
 //   2. Photos are processed automatically while `npm run dev` is running and
 //      before every `npm run build`. You can also run it by hand: npm run photos
-//   3. Upload new files in photos/ to DreamHost (dustinevans.net/photos/).
+//   3. With Cloudinary keys in .env, new photos are uploaded to Cloudinary and
+//      their URLs saved in photos.generated.js. Commit that file and push.
 //
 // Optional gallery details, keyed by slug (the folder name in lowercase with
 // dashes, e.g. "Night Sky" → 'night-sky'). Galleries listed here appear first,
@@ -406,7 +407,7 @@ export const projects = [
 //   title:       display name (default: the folder name, Title Cased)
 //   icon:        emoji used on the card if there's no cover photo
 //   description: one line shown under the gallery title
-//   cover:       '/photos/<slug>/<name>.webp' (default: the newest photo)
+//   cover:       a photo name from that gallery, e.g. 'img-1482' (default: the newest photo)
 export const albumInfo = {
   people: { title: 'People', icon: '🧑', description: 'Portraits and candids.' },
   'clearly-guilty': { title: 'Clearly Guilty', icon: '🕵️', description: '' }, // TODO: description
@@ -440,7 +441,7 @@ const albums = generatedPhotos
       title,
       icon: info.icon || '📷',
       description: info.description || '',
-      cover: info.cover || '',
+      cover: photos.find((p) => p.name === info.cover)?.thumb || '',
       photos: photos
         .map((p) => {
           const d = photoDetails[`${slug}/${p.name}`] || {}
