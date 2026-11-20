@@ -151,7 +151,10 @@ function render(page) {
 for (const page of pages) {
   const dir = path.join(dist, ...page.path.split('/').filter(Boolean))
   fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(path.join(dir, 'index.html'), render(page))
+  const html = render(page)
+  fs.writeFileSync(path.join(dir, 'index.html'), html)
+  // Same page at <path>.html, for links shared without the trailing slash
+  if (page.path !== '/') fs.writeFileSync(`${dir}.html`, html)
 }
 
 console.log(`Link previews: ${pages.length} pages, ${Object.keys(images).length} images in dist/share/`)

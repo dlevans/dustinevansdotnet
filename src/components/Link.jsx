@@ -1,4 +1,4 @@
-import { navigate } from '../router'
+import { navigate, withSlash } from '../router'
 
 /** In-site link that navigates without a full page reload. */
 export default function Link({ to, onClick, children, ...rest }) {
@@ -9,7 +9,7 @@ export default function Link({ to, onClick, children, ...rest }) {
     navigate(to)
   }
   return (
-    <a href={to} onClick={handle} {...rest}>
+    <a href={to.startsWith('/') ? withSlash(to.split('#')[0]) + (to.includes('#') ? `#${to.split('#')[1]}` : '') : to} onClick={handle} {...rest}>
       {children}
     </a>
   )
