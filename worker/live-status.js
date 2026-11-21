@@ -15,12 +15,42 @@ const CHANNELS = {
 }
 
 // Each check returns { live, url }; any error counts as not live.
-export async function checkTwitch(user = CHANNELS.twitch) {
+// Twitch uses the official Helix API when the Worker has TWITCH_CLIENT_ID and
+// TWITCH_CLIENT_SECRET secrets (see README), otherwise falls back to decapi.me.
+let twitchToken = null // { value, expires } — reused across requests while the Worker stays warm
+
+async function getTwitchToken(env) {
+  if (twitchToken && twitchToken.expires > Date.now() + 60_000) return twitchToken.value
+  const body = new URLSearchParams({
+    client_id: env.TWITCH_CLIENT_ID,
+    client_secret: env.TWITCH_CLIENT_SECRET,
+    grant_type: 'client_credentials',
+  })
+  const res = await fetch('https://id.twitch.tv/oauth2/token', { method: 'POST', body })
+  if (!res.ok) throw new Error(`Twitch token ${res.status}`)
+  const data = await res.json()
+  twitchToken = { value: data.access_token, expires: Date.now() + data.expires_in * 1000 }
+  return twitchToken.value
+}
+
+export async function checkTwitch(user = CHANNELS.twitch, env = {}) {
   const url = `https://www.twitch.tv/${user}`
+  if (env.TWITCH_CLIENT_ID && env.TWITCH_CLIENT_SECRET) {
+    const token = await getTwitchToken(env)
+    const res = await fetch(`https://api.twitch.tv/helix/streams?user_login=${encodeURIComponent(user)}`, {
+      headers: { 'Client-Id': env.TWITCH_CLIENT_ID, Authorization: `Bearer ${token}` },
+    })
+    if (res.status === 401) twitchToken = null // expired/revoked; get a new one next time
+    if (!res.ok) throw new Error(`Twitch API ${res.status}`)
+    const data = await res.json()
+    return { live: data.data?.some((s) => s.type === 'live') ?? false, url }
+  }
   const res = await fetch(`https://decapi.me/twitch/uptime/${user}`, { headers: { 'User-Agent': UA } })
-  const text = (await res.text()).trim().toLowerCase()
+  const raw = (await res.text()).trim()
+  const text = raw.toLowerCase()
   // decapi answers with an uptime ("1 hour, 2 minutes") when live, or "<user> is offline".
-  return { live: res.ok && text !== '' && !text.includes('offline') && !text.includes('error'), url }
+  const live = res.ok && text !== '' && !text.includes('offline') && !text.includes('error')
+  return { live, url, source: 'decapi', detail: `${res.status}: ${raw.slice(0, 120)}` }
 }
 
 export async function checkYouTube(handle = CHANNELS.youtube) {
@@ -52,11 +82,11 @@ const CHECKS = [
   { id: 'tiktok', label: 'TikTok', check: checkTikTok },
 ]
 
-export async function getStatus() {
+export async function getStatus(env = {}) {
   const platforms = await Promise.all(
     CHECKS.map(async ({ id, label, check }) => {
       try {
-        return { id, label, ...(await check()) }
+        return { id, label, ...(await check(undefined, env)) }
       } catch (err) {
         return { id, label, live: false, url: null, error: String(err?.message || err) }
       }
@@ -82,7 +112,7 @@ export default {
     const key = new Request(new URL('/status', request.url).toString())
     let res = await cache.match(key)
     if (!res) {
-      res = new Response(JSON.stringify(await getStatus()), {
+      res = new Response(JSON.stringify(await getStatus(env)), {
         headers: { 'Content-Type': 'application/json', 'Cache-Control': `public, max-age=${CACHE_SECONDS}` },
       })
       ctx.waitUntil(cache.put(key, res.clone()))
