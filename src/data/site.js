@@ -63,6 +63,11 @@ export const about = {
 // `image` is optional — put images in /public/projects/ and reference
 // them like '/projects/cosplay.webp'.
 // `archived: true` adds an "Archived" badge and includes it in the Archived filter.
+// `seoTitle` / `seoDescription` (optional) are what Google shows for the project's
+// page; ' · Dustin Evans' is added to the title. Without them, the title and
+// description are used. Put the keywords people would search for first.
+// `appCategory` (optional) marks the project as an app in Google's structured data,
+// e.g. 'GameApplication', 'TravelApplication' (Android if it has `playStore`).
 // `slug` + `details` create the project's own page at /projects/<slug>. Cards link
 // to that page; the `link`, `repo`, and `playStore` buttons appear on the page.
 // Each detail section can have a `heading`, `text`, a list of `items`, and a list of
@@ -71,6 +76,10 @@ export const projects = [
   {
     title: 'Midwest Cosplay Club Platform',
     slug: 'midwest-cosplay-club',
+    seoTitle: 'Midwest Cosplay Club: Community Site for Kansas City Cosplayers',
+    seoDescription:
+      'A community site for Kansas City cosplayers: profiles, groups, events, cosplan cards, and a craft store map. Built with React, Node.js, and PostgreSQL.',
+    appCategory: 'SocialNetworkingApplication',
     details: [
       {
         heading: 'What it is',
@@ -104,10 +113,14 @@ export const projects = [
   {
     title: 'Ren Faire GIS Navigator',
     slug: 'ren-faire-gis-navigator',
+    seoTitle: 'Ye Old Map: Kansas City Renaissance Festival Map App for Android',
+    seoDescription:
+      'An offline Android map of the Kansas City Renaissance Festival with live GPS, 300+ vendors, food stands, stages, and bathrooms, plus a parking pin.',
+    appCategory: 'TravelApplication',
     details: [
       {
         heading: 'What it is',
-        text: "The Kansas City Renaissance Festival covers acres of winding paths, and the paper map is hard to read once you're inside. Ye Olde Map is an Android app that shows where you are on the festival grounds and helps you find the turkey legs, the joust, or the nearest bathroom.",
+        text: "The Kansas City Renaissance Festival covers acres of winding paths, and the paper map is hard to read once you're inside. Ye Old Map is an Android app that shows where you are on the festival grounds and helps you find the turkey legs, the joust, or the nearest bathroom.",
       },
       {
         heading: 'Features',
@@ -137,6 +150,10 @@ export const projects = [
   {
     title: 'Laser Sword Builder',
     slug: 'laser-sword-builder',
+    seoTitle: 'Laser Sword Builder: Force Alignment Quiz & 3D Saber Designer',
+    seoDescription:
+      'Take a quick quiz to find out if you lean Jedi, Gray, or Sith, then design your own laser sword in 3D and share it with a link. Runs in your browser.',
+    appCategory: 'GameApplication',
     details: [
       {
         heading: 'What it is',
@@ -180,6 +197,9 @@ export const projects = [
   {
     title: 'KC X-34 Landspeeder',
     slug: 'kc-x34-landspeeder',
+    seoTitle: 'KC X-34 Landspeeder: Full-Size Replica Build in Kansas City',
+    seoDescription:
+      'A full-size X-34 landspeeder replica built in a Kansas City garage, from concept renders to fabrication. Follow along with the build.',
     details: [
       {
         heading: 'What it is',
@@ -202,6 +222,10 @@ export const projects = [
   {
     title: 'Ghost Scanner',
     slug: 'ghost-scanner',
+    seoTitle: "Ghost Scanner: AR Ghost Hunt Game in Your Phone's Browser",
+    seoDescription:
+      'Print the marker cards, hide them, and scan with your phone to find 3D ghosts. An augmented reality ghost hunt that runs in the browser, no app needed.',
+    appCategory: 'GameApplication',
     details: [
       {
         heading: 'What it is',
@@ -235,6 +259,7 @@ export const projects = [
   {
     title: 'iTable',
     slug: 'itable',
+    seoTitle: 'iTable: Handmade Arduino Coffee Table with an iPod Dock',
     image: '/projects/itable.webp',
     description:
       'A handmade coffee table with a built-in iPod dock, built over about a year. My first Arduino project and my first feature on Hack A Day.',
@@ -254,6 +279,7 @@ export const projects = [
   {
     title: 'RetroPie',
     slug: 'retropie',
+    seoTitle: 'RetroPie: Raspberry Pi Retro Console with Xbox 360 Controller Setup',
     image: '/projects/retropie.webp',
     description:
       'A ready-to-go Raspberry Pi retro gaming console with a preconfigured image, Xbox 360 wireless controller support, and a step-by-step setup guide.',
@@ -290,6 +316,7 @@ export const projects = [
   {
     title: 'LED Goggles',
     slug: 'led-goggles',
+    seoTitle: 'Arduino LED Goggles with NeoPixel Rings and Wii Nunchuck Control',
     image: '/projects/led-goggles.webp',
     description:
       "NeoPixel ring goggles driven by an Arduino and a Wii Nunchuck, with buttons for color and the joystick for spin and brightness. Featured on Adafruit's blog.",
@@ -319,6 +346,7 @@ export const projects = [
   {
     title: 'LED Goggles 2',
     slug: 'led-goggles-2',
+    seoTitle: 'LED Goggles 2: Adafruit Gemma NeoPixel Goggles',
     image: '/projects/led-goggles-2.webp',
     description:
       'A cleaner redesign built around an Adafruit Gemma, with the electronics hidden inside the goggles and one button for each eye.',
@@ -338,6 +366,7 @@ export const projects = [
   {
     title: 'blueNES',
     slug: 'bluenes',
+    seoTitle: 'blueNES: Bluetooth NES Controller Adapter Built with Arduino',
     image: '/projects/bluenes.webp',
     description:
       'A broken NES rebuilt as a Bluetooth controller adapter, using an Arduino and BlueSmirf to play on phones and laptops. Featured on Hack A Day.',
@@ -361,6 +390,7 @@ export const projects = [
   {
     title: 'blueNES 2',
     slug: 'bluenes-2',
+    seoTitle: 'blueNES 2: NES Controller to Bluetooth Keyboard with Bluefruit',
     image: '/projects/bluenes-2.webp',
     description:
       'A simpler follow-up that turns an original NES controller into a Bluetooth keyboard with an Adafruit Bluefruit.',
@@ -376,6 +406,7 @@ export const projects = [
   {
     title: 'Tesseract Case',
     slug: 'tesseract-case',
+    seoTitle: 'Tesseract Case: Raspberry Pi Media Player Prop with NeoPixels',
     image: '/projects/tesseract-case.webp',
     description:
       'An Avengers-inspired portable media case with a Raspberry Pi, 7" screen, speakers, and NeoPixels controlled by a custom Android app.',
@@ -409,6 +440,7 @@ export const projects = [
   {
     title: 'DNA Arcade',
     slug: 'dna-arcade',
+    seoTitle: 'DNA Arcade: DIY MDF Arcade Cabinet with NES and SNES Emulators',
     image: '/projects/dna-arcade.webp',
     description:
       'The "Dustin and Nick Arcade": a full-size MDF cabinet powered by a salvaged laptop, with custom software that launches NES and SNES emulators.',
@@ -445,6 +477,7 @@ export const projects = [
   {
     title: 'Raspberry Pi BB-8',
     slug: 'raspberry-pi-bb8',
+    seoTitle: 'Drive a Sphero BB-8 from a Raspberry Pi with an Xbox 360 Controller',
     image: '/projects/raspberry-pi-bb8.webp',
     description:
       'A guide to driving a Sphero BB-8 with an Xbox 360 controller from a Raspberry Pi 2 or 3 over Bluetooth LE, using open-source Python code.',
@@ -475,6 +508,7 @@ export const projects = [
   {
     title: 'Control Panel',
     slug: 'control-panel',
+    seoTitle: 'Control Panel: Key-Switched Arduino NeoPixel Box with Android App',
     image: '/projects/control-panel.webp',
     description:
       'A key-switched Arduino box that controls a NeoPixel strip from an Android app, with a spectrum shield and Bluetooth.',

@@ -75,9 +75,109 @@ const photoImage = (photo) => {
 const coverOf = (album) => album.photos.find((p) => p.thumb === album.cover) || album.photos[0]
 const firstAlbum = photography.albums[0]
 
+// ── Structured data & page text ─────────────────────────────────────────
+const personId = `${site}/#person`
+const pageUrl = (p) => `${site}${p === '/' ? '/' : `${p}/`}`
+const imageUrl = (img) => (img.startsWith('https://') ? img : `${site}${encodeURI(img)}`)
+
+function breadcrumbs(trail) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [['Home', '/'], ...trail].map(([name, p], i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name,
+      item: pageUrl(p),
+    })),
+  }
+}
+
+// Apps (projects with `appCategory`) are marked as software; everything else as a creative work.
+function projectJsonLd(p) {
+  const base = {
+    '@context': 'https://schema.org',
+    name: p.title,
+    description: p.seoDescription || p.description,
+    url: pageUrl(`/projects/${p.slug}`),
+    ...(p.image && { image: imageUrl(p.image) }),
+    author: { '@type': 'Person', '@id': personId, name: fullName, url: `${site}/` },
+    keywords: p.tags.join(', '),
+  }
+  if (!p.appCategory) return { ...base, '@type': 'CreativeWork' }
+  return {
+    ...base,
+    '@type': p.playStore ? 'MobileApplication' : 'WebApplication',
+    applicationCategory: p.appCategory,
+    operatingSystem: p.playStore ? 'Android' : 'Any (web browser)',
+    ...(p.playStore ? { installUrl: p.playStore } : p.link && { sameAs: p.link }),
+  }
+}
+
+// Search engines read this HTML right away, without running JavaScript. React
+// replaces it as soon as the app loads. Class names match the real page so it
+// looks the same in the moment before that happens.
+const linkHtml = (href, label, cls) =>
+  `<a${cls ? ` class="${cls}"` : ''} href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${escapeHtml(label)} ↗</a>`
+const listHtml = (items) => `<ul>${items.map((i) => `<li>${i}</li>`).join('')}</ul>`
+const tagsHtml = (tags) => `<ul class="tags">${tags.map((t) => `<li>${escapeHtml(t)}</li>`).join('')}</ul>`
+
+function projectBody(p) {
+  const links = [
+    p.link && linkHtml(p.link, p.linkLabel ? `View on ${p.linkLabel}` : 'Check it out', 'btn'),
+    p.repo && linkHtml(p.repo, 'View on GitHub', 'btn btn--ghost'),
+    p.playStore && `<a class="project__store" href="${escapeHtml(p.playStore)}" target="_blank" rel="noreferrer"><img src="/badges/google-play.png" alt="Get it on Google Play" width="155" height="60" /></a>`,
+  ].filter(Boolean)
+  const sections = (p.details || []).map(({ heading, text, items, links: sectionLinks }) =>
+    [
+      `<h2>${escapeHtml(heading)}</h2>`,
+      text && `<p>${escapeHtml(text)}</p>`,
+      items && listHtml(items.map(escapeHtml)),
+      sectionLinks && listHtml(sectionLinks.map(({ label, url }) => linkHtml(url, label))),
+    ].filter(Boolean).join(''),
+  )
+  return [
+    '<section class="section page"><div class="container"><div class="page__header">',
+    '<a href="/projects/" class="page__back mono">← all projects</a>',
+    `<p class="mono kicker">${p.archived ? 'archived project' : 'project'}</p>`,
+    `<h1 class="page__title">${escapeHtml(p.title)}</h1>`,
+    `<p class="section-lead">${escapeHtml(p.description)}</p>`,
+    tagsHtml(p.tags),
+    links.length ? `<div class="project__links">${links.join('')}</div>` : '',
+    '</div>',
+    p.image ? `<img class="project__image" src="${escapeHtml(p.image)}" alt="${escapeHtml(`${p.title} screenshot`)}" />` : '',
+    `<div class="prose">${sections.join('')}</div>`,
+    '</div></section>',
+  ].join('')
+}
+
+function projectsBody() {
+  const items = projects.map((p) => {
+    const name = p.slug ? `<a href="/projects/${escapeHtml(p.slug)}/">${escapeHtml(p.title)}</a>` : escapeHtml(p.title)
+    return `<strong>${name}</strong>: ${escapeHtml(p.description)}`
+  })
+  return [
+    '<section class="section page"><div class="container"><div class="page__header">',
+    '<a href="/" class="page__back mono">← back home</a>',
+    `<h1 class="page__title">All projects</h1>`,
+    `<p class="section-lead">Things ${escapeHtml(profile.firstName)} has built: software, electronics, props, and more.</p>`,
+    '</div>',
+    `<div class="prose">${listHtml(items)}</div>`,
+    '</div></section>',
+  ].join('')
+}
+
 const pages = [
   { path: '/', title: profile.seoTitle || fullName, heading: fullName, description: profile.seoDescription || defaultDescription, image: images.card, alt: `${fullName} business card` },
-  { path: '/projects', title: `Projects · ${fullName}`, description: `Things ${profile.firstName} has built: software, electronics, props, and more.`, image: images.card, alt: `${fullName} business card` },
+  {
+    path: '/projects',
+    title: `Projects · ${fullName}`,
+    description: `Things ${profile.firstName} has built: software, electronics, props, and more.`,
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: projectsBody(),
+    jsonLd: [breadcrumbs([['Projects', '/projects']])],
+  },
   { path: '/privacy', title: `Privacy Policy · ${fullName}`, description: `Privacy policy for ${fullName}'s website and apps.`, image: images.card, alt: `${fullName} business card` },
   {
     path: '/photography',
@@ -88,10 +188,12 @@ const pages = [
   },
   ...projectPages.map((p) => ({
     path: `/projects/${p.slug}`,
-    title: `${p.title} · ${fullName}`,
-    description: p.description,
+    title: `${p.seoTitle || p.title} · ${fullName}`,
+    description: p.seoDescription || p.description,
     image: images[`project:${p.slug}`],
     alt: `${p.title} project card`,
+    body: projectBody(p),
+    jsonLd: [projectJsonLd(p), breadcrumbs([['Projects', '/projects'], [p.title, `/projects/${p.slug}`]])],
   })),
   ...photography.albums.flatMap((album) => {
     const albumPath = `/photography/${album.slug}`
@@ -122,6 +224,7 @@ function personJsonLd() {
   const person = {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': personId,
     name: fullName,
     url: `${site}/`,
     image: `${site}${images.card}`,
@@ -131,8 +234,7 @@ function personJsonLd() {
     knowsAbout: about.skills,
     sameAs: [...socials.map((s) => s.url).filter((u) => u.startsWith('https://')), photography.instagram].filter(Boolean),
   }
-  // Escape "<" so nothing in the data can close the <script> tag early.
-  return JSON.stringify(person).replace(/</g, '\\u003c')
+  return person
 }
 
 // ── HTML ────────────────────────────────────────────────────────────────
@@ -162,11 +264,14 @@ function render(page) {
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${image}" />`,
   ]
-  if (page.path === '/') tags.push(`<script type="application/ld+json">${personJsonLd()}</script>`)
+  const jsonLd = page.path === '/' ? [personJsonLd()] : page.jsonLd || []
+  // Escape "<" so nothing in the data can close the <script> tag early.
+  for (const data of jsonLd) tags.push(`<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`)
   return template
     .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${title}</title>`)
     .replace(/<meta name="description"[^>]*>/, () => `<meta name="description" content="${description}" />`)
     .replace('</head>', () => `    ${tags.join('\n    ')}\n  </head>`)
+    .replace('<div id="root"></div>', () => `<div id="root">${page.body || ''}</div>`)
 }
 
 for (const page of pages) {
@@ -178,11 +283,10 @@ for (const page of pages) {
 }
 
 // ── Sitemap & robots.txt ────────────────────────────────────────────────
-const urlOf = (p) => `${site}${p === '/' ? '/' : `${p}/`}`
 const sitemap = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-  ...pages.map((page) => `  <url><loc>${escapeHtml(urlOf(page.path))}</loc></url>`),
+  ...pages.map((page) => `  <url><loc>${escapeHtml(pageUrl(page.path))}</loc></url>`),
   '</urlset>',
   '',
 ].join('\n')

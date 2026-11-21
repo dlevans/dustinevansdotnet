@@ -31,7 +31,7 @@ function resolve(path) {
   const projectMatch = path.match(/^\/projects\/([^/]+)$/)
   const project = projectMatch && projects.find((p) => p.slug === projectMatch[1])
   if (project) {
-    return { page: ProjectPage, props: { project }, title: `${project.title} · Projects · ${fullName}` }
+    return { page: ProjectPage, props: { project }, title: `${project.seoTitle || project.title} · ${fullName}` }
   }
   const m = path.match(/^\/photography\/([^/]+)(?:\/([^/]+))?$/)
   const album = m && photography.albums.find((a) => a.slug === m[1])
