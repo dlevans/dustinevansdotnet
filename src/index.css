@@ -176,6 +176,22 @@ h1, h2, h3 { line-height: 1.1; margin: 0; }
   letter-spacing: -0.04em;
   line-height: 0.95;
 }
+.hero__live { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; margin-top: 18px; }
+.hero__live-label {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: clamp(1.6rem, 4.5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; color: var(--red-2);
+}
+.hero__live-dot {
+  width: 0.45em; height: 0.45em; border-radius: 50%; background: var(--red);
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: live-pulse 1.6s ease-out infinite;
+}
+@keyframes live-pulse { to { box-shadow: 0 0 0 0.5em rgba(239, 68, 68, 0); } }
+.hero__live-link {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px;
+  border: 1px solid var(--red); color: var(--text); font-weight: 600; transition: background 0.2s;
+}
+.hero__live-link:hover { background: rgba(239, 68, 68, 0.15); }
+@media (prefers-reduced-motion: reduce) { .hero__live-dot { animation: none; } }
 .hero__roles {
   font-size: clamp(1.4rem, 3.4vw, 2.2rem);
   font-weight: 500;

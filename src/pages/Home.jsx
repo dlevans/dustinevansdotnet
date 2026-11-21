@@ -5,6 +5,7 @@ import { ProjectGrid } from '../components/ProjectCard'
 import PhotoGrid from '../components/PhotoGrid'
 import { AlbumGrid } from '../components/AlbumCard'
 import Link from '../components/Link'
+import LiveBadge from '../components/LiveBadge'
 import FlipWords from '../fx/FlipWords'
 import { iconFor } from '../icons'
 import { confettiCannons } from '../fx/celebrate'
@@ -22,6 +23,7 @@ function Hero() {
           <span className="gradient-text">{profile.firstName}</span>{' '}
           <span className="outline-text">{profile.lastName}</span>
         </h1>
+        <LiveBadge />
         <p className="hero__roles">
           {profile.roleLines.map((line, i) => (
             <span key={i} className={i % 2 === 0 ? 'strong' : ''}>

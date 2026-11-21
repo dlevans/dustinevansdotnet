@@ -30,6 +30,9 @@ export const profile = {
     open: false, // true = "OPEN TO WORK", false = "NOT LOOKING"
     note: 'Always up for a good conversation or a freelance gig.',
   },
+  // Cloudflare Worker that checks Twitch/YouTube/TikTok (see worker/README.md).
+  // Empty = the "is live!" badge is off. Add ?live to any URL to preview it.
+  liveStatusUrl: 'https://live-status.evansdustin.workers.dev',
   resumeUrl: '', // e.g. '/resume.pdf' (put the PDF in /public)
 }
 
@@ -516,7 +519,7 @@ export const experience = [
   },
 ]
 
-// `icon` options: github, email, youtube, instagram, tiktok, bluesky, linkedin
+// `icon` options: github, email, twitch, youtube, instagram, tiktok, bluesky, linkedin
 // Links with an empty `url` are hidden until you fill them in.
 export const socials = [
   { label: 'GitHub', icon: 'github', url: 'https://github.com/dlevans' },
