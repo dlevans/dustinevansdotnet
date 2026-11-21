@@ -50,6 +50,7 @@ export const about = {
 // Projects — the /projects page shows ALL of these (in this order).
 // The home page shows up to 6 marked `featured: true`.
 // `linkLabel` (optional) changes the "Live" link text, e.g. 'Facebook'.
+// `playStore` (optional) is a Google Play listing URL; adds a "Get it on Google Play" badge.
 // `image` is optional — put images in /public/projects/ and reference
 // them like '/projects/cosplay.webp'.
 // `archived: true` adds an "Archived" badge and includes it in the Archived filter.
@@ -73,6 +74,7 @@ export const projects = [
     tags: ['Android', 'Kotlin', 'GIS', 'Leaflet'],
     link: 'https://kcrfmap.onrender.com/',
     repo: 'https://github.com/dlevans/YeOldMap',
+    playStore: 'https://play.google.com/store/apps/details?id=dustin.evans.yeoldmap',
     image: '/projects/ren-faire-map.webp',
   },
   {

@@ -2,7 +2,7 @@ import { Reveal } from './Reveal'
 import Link from './Link'
 
 export default function ProjectCard({ project, index }) {
-  const { title, description, tags, link, linkLabel = 'Live', repo, image, archived, slug } = project
+  const { title, description, tags, link, linkLabel = 'Live', repo, playStore, image, archived, slug } = project
   const href = link || repo
   const page = slug ? `/projects/${slug}` : null
   const media = (
@@ -69,6 +69,11 @@ export default function ProjectCard({ project, index }) {
               </a>
             )}
           </div>
+          {playStore && (
+            <a className="card__store" href={playStore} target="_blank" rel="noreferrer">
+              <img src="/badges/google-play.png" alt="Get it on Google Play" width="155" height="60" loading="lazy" />
+            </a>
+          )}
         </div>
       </div>
     </Reveal>

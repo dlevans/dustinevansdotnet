@@ -311,6 +311,8 @@ h1, h2, h3 { line-height: 1.1; margin: 0; }
 .card__links { display: flex; gap: 18px; font-weight: 600; }
 .card__links a { color: var(--red-2); transition: color 0.2s; }
 .card__links a:hover { color: var(--text); }
+.card__store { display: inline-block; margin: 8px 0 0 -10px; }
+.card__store img { display: block; height: 60px; width: auto; }
 
 /* Experience */
 .timeline { list-style: none; margin: 0; padding: 0 0 0 28px; border-left: 2px solid var(--border); }
