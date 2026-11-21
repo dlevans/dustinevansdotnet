@@ -1,7 +1,7 @@
 import { profile } from '../data/site'
 import Link from '../components/Link'
 
-const EFFECTIVE_DATE = 'November 17, 2026'
+const EFFECTIVE_DATE = 'November 21, 2026'
 
 export default function PrivacyPage() {
   const name = `${profile.firstName} ${profile.lastName}`
@@ -21,10 +21,11 @@ export default function PrivacyPage() {
 
         <h2>The short version</h2>
         <p>
-          <strong>I don't collect, save, or sell your data.</strong>
+          <strong>My apps don't collect your data, and I never sell it.</strong> This website uses Google
+          Analytics to count visits and see which pages are popular.
         </p>
 
-        <h2>Details</h2>
+        <h2>Apps</h2>
         <ul>
           <li>My apps don't ask you to create an account and don't collect personal information.</li>
           <li>
@@ -38,6 +39,42 @@ export default function PrivacyPage() {
             Some apps load content such as map tiles from third-party services. Those services have
             their own privacy policies.
           </li>
+        </ul>
+
+        <h2>This website</h2>
+        <ul>
+          <li>
+            This site uses Google Tag Manager and Google Analytics to understand how visitors use it, for
+            example how many people visit and which pages they view.
+          </li>
+          <li>
+            Google may set cookies and collect information such as your approximate location, browser,
+            device type, and the pages you visit. I only see this as aggregated statistics. I can't
+            identify you from it.
+          </li>
+          <li>
+            Google processes this data under its own{' '}
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+              privacy policy
+            </a>
+            . You can learn{' '}
+            <a
+              href="https://policies.google.com/technologies/partner-sites"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              how Google uses data from sites that use its services
+            </a>
+            .
+          </li>
+          <li>
+            To opt out, you can block cookies in your browser or install the{' '}
+            <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">
+              Google Analytics opt-out add-on
+            </a>
+            .
+          </li>
+          <li>I don't sell, rent, or share this information with anyone else.</li>
         </ul>
 
         <h2>Changes</h2>
