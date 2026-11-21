@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { profile, projects, photography } from '../src/data/site.js'
+import { profile, about, projects, photography, socials } from '../src/data/site.js'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(root, 'dist')
@@ -76,7 +76,7 @@ const coverOf = (album) => album.photos.find((p) => p.thumb === album.cover) || 
 const firstAlbum = photography.albums[0]
 
 const pages = [
-  { path: '/', title: fullName, heading: fullName, description: defaultDescription, image: images.card, alt: `${fullName} business card` },
+  { path: '/', title: profile.seoTitle || fullName, heading: fullName, description: profile.seoDescription || defaultDescription, image: images.card, alt: `${fullName} business card` },
   { path: '/projects', title: `Projects · ${fullName}`, description: `Things ${profile.firstName} has built: software, electronics, props, and more.`, image: images.card, alt: `${fullName} business card` },
   { path: '/privacy', title: `Privacy Policy · ${fullName}`, description: `Privacy policy for ${fullName}'s website and apps.`, image: images.card, alt: `${fullName} business card` },
   {
@@ -115,6 +115,26 @@ const pages = [
   }),
 ]
 
+// ── Structured data ─────────────────────────────────────────────────────
+// Tells Google who the site is about, so searches for the name + city match.
+function personJsonLd() {
+  const [city, region] = profile.location.split(',').map((x) => x.trim())
+  const person = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: fullName,
+    url: `${site}/`,
+    image: `${site}${images.card}`,
+    jobTitle: profile.jobTitle,
+    description: profile.seoDescription || defaultDescription,
+    address: { '@type': 'PostalAddress', addressLocality: city, addressRegion: region, addressCountry: 'US' },
+    knowsAbout: about.skills,
+    sameAs: [...socials.map((s) => s.url).filter((u) => u.startsWith('https://')), photography.instagram].filter(Boolean),
+  }
+  // Escape "<" so nothing in the data can close the <script> tag early.
+  return JSON.stringify(person).replace(/</g, '\\u003c')
+}
+
 // ── HTML ────────────────────────────────────────────────────────────────
 const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
 
@@ -142,6 +162,7 @@ function render(page) {
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${image}" />`,
   ]
+  if (page.path === '/') tags.push(`<script type="application/ld+json">${personJsonLd()}</script>`)
   return template
     .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${title}</title>`)
     .replace(/<meta name="description"[^>]*>/, () => `<meta name="description" content="${description}" />`)
@@ -155,6 +176,18 @@ for (const page of pages) {
   // these for URLs without a trailing slash too.
   fs.writeFileSync(path.join(dir, 'index.html'), render(page))
 }
+
+// ── Sitemap & robots.txt ────────────────────────────────────────────────
+const urlOf = (p) => `${site}${p === '/' ? '/' : `${p}/`}`
+const sitemap = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  ...pages.map((page) => `  <url><loc>${escapeHtml(urlOf(page.path))}</loc></url>`),
+  '</urlset>',
+  '',
+].join('\n')
+fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap)
+fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${site}/sitemap.xml\n`)
 
 console.log(`Link previews: ${pages.length} pages, ${Object.keys(images).length} images in dist/share/`)
 if (missingPhotos.length) {

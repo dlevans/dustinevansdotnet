@@ -19,7 +19,7 @@ import ProjectPage from './pages/ProjectPage'
 const fullName = `${profile.firstName} ${profile.lastName}`
 
 const routes = {
-  '/': { page: Home, title: fullName },
+  '/': { page: Home, title: profile.seoTitle || fullName },
   '/projects': { page: ProjectsPage, title: `Projects · ${fullName}` },
   '/photography': { page: PhotographyPage, title: `Photography · ${fullName}` },
   '/privacy': { page: PrivacyPage, title: `Privacy Policy · ${fullName}` },

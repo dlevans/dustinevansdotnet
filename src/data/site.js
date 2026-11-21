@@ -25,6 +25,12 @@ export const profile = {
   tagline:
     'I bridge the gap between heavy backend databases and user-facing applications — with C#, advanced SQL, and React.',
   location: 'Kansas City, MO',
+  // Search engines: the homepage's browser-tab title and Google snippet.
+  // Keep the title under ~65 characters and the description under ~155.
+  seoTitle: 'Dustin Evans · Kansas City Software Developer & Integration Engineer',
+  seoDescription:
+    'Dustin Evans is a Kansas City software developer and integration engineer building data pipelines, web apps, and tools with C#, SQL, and React.',
+  jobTitle: 'Integration Engineer', // used in Google's structured data
   coordinates: '39° 05\' 59" N / 94° 34\' 42" W',
   status: {
     open: false, // true = "OPEN TO WORK", false = "NOT LOOKING"
