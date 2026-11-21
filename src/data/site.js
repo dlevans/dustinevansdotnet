@@ -63,11 +63,36 @@ export const about = {
 // `image` is optional — put images in /public/projects/ and reference
 // them like '/projects/cosplay.webp'.
 // `archived: true` adds an "Archived" badge and includes it in the Archived filter.
-// `slug` + `details` (optional) create a page at /projects/<slug>. Each detail
-// section can have a `heading`, `text`, and a list of `items`.
+// `slug` + `details` create the project's own page at /projects/<slug>. Cards link
+// to that page; the `link`, `repo`, and `playStore` buttons appear on the page.
+// Each detail section can have a `heading`, `text`, a list of `items`, and a list of
+// `links` ({ label, url }) that open in a new tab.
 export const projects = [
   {
     title: 'Midwest Cosplay Club Platform',
+    slug: 'midwest-cosplay-club',
+    details: [
+      {
+        heading: 'What it is',
+        text: 'Midwest Cosplay Club is a community site for cosplayers around Kansas City and the Midwest. Members make a profile, join groups, plan what they are wearing to upcoming events, and find the local shops that sell the materials they need.',
+      },
+      {
+        heading: 'Features',
+        items: [
+          'Member profiles with a public page and a QR code to share it at conventions',
+          'Groups and events with member lists and a shared calendar',
+          'Cosplan cards: add a photo of each character you plan to wear to an event, then download the card as an image with a QR code linking back to the event',
+          'A map of fabric and craft stores around Kansas City, built with Leaflet, that members can add to',
+          'Libraries of tutorials and patterns that members can contribute to',
+          'Maker tools: a body measurement tracker, a scale calculator, and resistor and electrical calculators for props with electronics',
+          'Mini-games (Snake, Brick Breaker, Memory, a hacking game, and Sigil Strike) and photo scavenger hunts for convention meetups',
+        ],
+      },
+      {
+        heading: 'How it works',
+        text: 'The frontend is a React app with React Router. It talks to a Node.js API backed by a PostgreSQL database that stores users, groups, events, stores, tutorials, and hunt progress. Passwords are hashed with bcrypt, and logins use JSON Web Tokens. Photos are cropped and resized in the browser before upload and stored on Cloudinary, so the server never handles full-size images.',
+      },
+    ],
     description:
       'A full-stack community web app with a React frontend, a Node.js API, and a PostgreSQL database managing user profiles, events, and site content.',
     tags: ['React', 'Node.js', 'PostgreSQL'],
@@ -78,6 +103,29 @@ export const projects = [
   },
   {
     title: 'Ren Faire GIS Navigator',
+    slug: 'ren-faire-gis-navigator',
+    details: [
+      {
+        heading: 'What it is',
+        text: "The Kansas City Renaissance Festival covers acres of winding paths, and the paper map is hard to read once you're inside. Ye Olde Map is an Android app that shows where you are on the festival grounds and helps you find the turkey legs, the joust, or the nearest bathroom.",
+      },
+      {
+        heading: 'Features',
+        items: [
+          'More than 300 mapped locations: about 190 vendors, 50 food stands, 15 stages, plus activities, ATMs, bathrooms, entrances, and ticket counters',
+          'Separate maps for vendors, food, stages, and bathrooms, so you only see what you are looking for',
+          'Search by name, plus a detail page for each location',
+          'Live GPS position on the map',
+          'Drop a pin where you parked so you can find your car at the end of the day',
+          'Themed map artwork (classic, fae, viking, or pirate) and an optional labeled grid in 50-foot squares',
+          'Works offline: the whole map is built into the app, so it works even when cell service is spotty',
+        ],
+      },
+      {
+        heading: 'How it works',
+        text: "I started from county-level GIS data and processed it into map tiles covering just the festival grounds. Those tiles ship inside the app as an MBTiles file, and osmdroid draws them with no internet connection. Illustrated map artwork is pinned on top at the exact coordinates of the grounds, so it lines up with your GPS position. Every location lives in a JSON file with its coordinates, category, and description, which makes it easy to update each season. The app is written in Kotlin and is available on Google Play.",
+      },
+    ],
     description:
       'An interactive Android map app for navigating complex outdoor event layouts at the Kansas City Ren Faire, built on processed county-level GIS data.',
     tags: ['Android', 'Kotlin', 'GIS', 'Leaflet'],
@@ -88,6 +136,39 @@ export const projects = [
   },
   {
     title: 'Laser Sword Builder',
+    slug: 'laser-sword-builder',
+    details: [
+      {
+        heading: 'What it is',
+        text: 'A two-part web toy. First, a short Force alignment quiz tells you whether you lean Jedi, Gray, or Sith. Then a 3D builder lets you design the laser sword that goes with your result.',
+      },
+      {
+        heading: 'The quiz',
+        text: 'Five questions, each with a light, neutral, and dark answer worth 1, 2, or 3 points. A live counter shows how your answers are adding up. When you submit, your average score decides your fate: Jedi Knight, Gray Jedi, or Sith Lord.',
+      },
+      {
+        heading: 'The builder',
+        items: [
+          'A 3D hilt you can spin and zoom, made of four swappable sections: emitter, switch, sleeve, and pommel',
+          'Pick a color for each section and for the glowing blade',
+          'Your quiz result carries over and sets the starting style',
+          'A share button copies a link that rebuilds your exact design for whoever opens it',
+        ],
+      },
+      {
+        heading: 'How it works',
+        text: 'Plain HTML, CSS, and JavaScript with no build step, hosted on GitHub Pages. The builder uses Three.js to load each hilt part as a GLB model and stack them into one saber, with orbit controls for spinning it. Your design is saved entirely in the URL, so sharing needs no database.',
+      },
+      {
+        heading: 'Credits',
+        text: 'The laser sword parts used in the builder come from Brass Engine Studio. Check out their work:',
+        links: [
+          { label: 'Brass Engine Studio website', url: 'https://brassengine.studio/' },
+          { label: 'Brass Engine on Etsy', url: 'https://www.etsy.com/shop/BrassEngine' },
+          { label: 'Brass Engine on Facebook', url: 'https://www.facebook.com/BrassEngine' },
+        ],
+      },
+    ],
     description:
       'A Force alignment quiz: answer a series of questions to find out if you lean Jedi, Gray, or Sith, then build a lightsaber to match your fate.',
     tags: ['HTML', 'JavaScript', 'CSS'],
@@ -98,6 +179,17 @@ export const projects = [
   },
   {
     title: 'KC X-34 Landspeeder',
+    slug: 'kc-x34-landspeeder',
+    details: [
+      {
+        heading: 'What it is',
+        text: 'A full-size replica of the X-34 landspeeder, built here in Kansas City.',
+      },
+      {
+        heading: 'The build',
+        text: 'The project started as concept renders and moved into garage fabrication. I post progress photos and updates on the Facebook page as the build comes together.',
+      },
+    ],
     description:
       'A full-size X-34 landspeeder replica built here in Kansas City — from concept renders to garage fabrication. Follow along with the build.',
     tags: ['Prop Build', 'Fabrication', 'Cosplay'],
@@ -109,6 +201,27 @@ export const projects = [
   },
   {
     title: 'Ghost Scanner',
+    slug: 'ghost-scanner',
+    details: [
+      {
+        heading: 'What it is',
+        text: "A ghost hunt that runs in your phone's browser. Print the marker cards, hide them around the house, and hand someone the scanner. When the camera spots a card, a 3D ghost appears floating on top of it. No app to install.",
+      },
+      {
+        heading: 'Features',
+        items: [
+          'Seven ghosts to find, including Boo-ris, Sir Spook, The Wailer, and Ghost Malone',
+          'Tracks which ghosts you have found so far',
+          'Snap a photo with the ghosts in it and save it to your phone',
+          'A printable sheet of marker cards',
+          'A ghost builder: shape your own ghost, add hats, horns, bows, or a pumpkin, and download it with its own marker, ready to add to the hunt',
+        ],
+      },
+      {
+        heading: 'How it works',
+        text: "Each card is an ArUco marker, a square black-and-white pattern that's easy for a computer to recognize. Every camera frame goes to js-aruco2, which finds the markers and their four corners. A pose-estimation step (POSIT) turns those corners into the card's position and angle in 3D space. Three.js then places that card's ghost model at the same spot on a transparent layer over the live video, so the ghost stays stuck to the card as you move. It's built with React and Vite.",
+      },
+    ],
     description:
       'A browser-based augmented reality app: point your phone camera at printed ArUco markers to reveal 3D ghosts hiding on the walls, or build your own ghost.',
     tags: ['React', 'Three.js', 'AR'],

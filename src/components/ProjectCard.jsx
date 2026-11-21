@@ -2,8 +2,7 @@ import { Reveal } from './Reveal'
 import Link from './Link'
 
 export default function ProjectCard({ project, index }) {
-  const { title, description, tags, link, linkLabel = 'Live', repo, playStore, image, archived, slug } = project
-  const href = link || repo
+  const { title, description, tags, image, archived, slug } = project
   const page = slug ? `/projects/${slug}` : null
   const media = (
     <>
@@ -37,42 +36,22 @@ export default function ProjectCard({ project, index }) {
             {media}
           </Link>
         ) : (
-          <a
-            className="card__media"
-            href={href || undefined}
-            target="_blank"
-            rel="noreferrer"
-            tabIndex={href ? 0 : -1}
-            data-variant={index % 3}
-          >
+          <div className="card__media" data-variant={index % 3}>
             {media}
-          </a>
+          </div>
         )}
         <div className="card__body">
-          <h3>{title}</h3>
+          <h3>{page ? <Link to={page}>{title}</Link> : title}</h3>
           <p>{description}</p>
           <ul className="tags">
             {tags.map((t) => (
               <li key={t}>{t}</li>
             ))}
           </ul>
-          <div className="card__links">
-            {page && <Link to={page}>Read more →</Link>}
-            {link && (
-              <a href={link} target="_blank" rel="noreferrer">
-                {linkLabel} ↗
-              </a>
-            )}
-            {repo && (
-              <a href={repo} target="_blank" rel="noreferrer">
-                Code ↗
-              </a>
-            )}
-          </div>
-          {playStore && (
-            <a className="card__store" href={playStore} target="_blank" rel="noreferrer">
-              <img src="/badges/google-play.png" alt="Get it on Google Play" width="155" height="60" loading="lazy" />
-            </a>
+          {page && (
+            <div className="card__links">
+              <Link to={page}>Read more →</Link>
+            </div>
           )}
         </div>
       </div>

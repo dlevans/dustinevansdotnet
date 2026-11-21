@@ -314,6 +314,8 @@ h1, h2, h3 { line-height: 1.1; margin: 0; }
 .card:hover .card__placeholder { transform: scale(1.1) rotate(-4deg); }
 .card__body { padding: 24px 26px 26px; }
 .card__body h3 { font-size: 1.4rem; margin-bottom: 8px; }
+.card__body h3 a { color: inherit; }
+.card__body h3 a:hover { color: var(--red-2); }
 .card__body p { color: var(--muted); margin: 0 0 16px; }
 .tags { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 8px; }
 .tags li {
@@ -756,6 +758,12 @@ html.is-flipped body { transform: rotate(180deg); }
 .prose__lead { margin-top: 28px; }
 .page__header .tags { margin: 20px 0 0; }
 .prose p.project__note { margin-top: 44px; }
+.project__links { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 28px; }
+.project__store img { display: block; height: 60px; width: auto; margin-left: -10px; }
+.project__image {
+  display: block; width: 100%; max-width: 760px; max-height: 460px; object-fit: cover;
+  border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 8px;
+}
 .prose p.kicker { color: var(--red-2); font-size: 0.85em; }
 .prose p.muted { color: var(--muted); font-size: 0.9rem; }
 .footer__link { color: var(--muted); font-size: 0.85rem; transition: color 0.2s; }
