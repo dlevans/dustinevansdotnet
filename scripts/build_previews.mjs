@@ -4,6 +4,9 @@
 // still loads from those files exactly as it does from the main index.html.
 
 import { spawnSync } from 'node:child_process'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { createServer } from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -167,8 +170,33 @@ function projectsBody() {
   ].join('')
 }
 
+// The rest of the pages are rendered from the real React components, so the text
+// search engines (and AdSense's crawler) see without JavaScript matches the site.
+const vite = await createServer({ root, logLevel: 'error', server: { middlewareMode: true }, appType: 'custom' })
+// Just enough of `window` for the components that read it while rendering
+globalThis.window = {
+  location: { host: new URL(site).host, search: '', pathname: '/', hash: '' },
+  addEventListener() {},
+  removeEventListener() {},
+}
+const load = async (file) => (await vite.ssrLoadModule(file)).default
+const [Home, PrivacyPage, PhotographyPage, AlbumPage] = await Promise.all(
+  ['Home', 'PrivacyPage', 'PhotographyPage', 'AlbumPage'].map((n) => load(`/src/pages/${n}.jsx`)),
+)
+// Reveal-on-scroll sections start hidden until JavaScript runs; show them in the static copy.
+const renderPage = (Component, props) =>
+  renderToStaticMarkup(createElement(Component, props)).replace(/class="reveal /g, 'class="reveal is-visible ')
+
 const pages = [
-  { path: '/', title: profile.seoTitle || fullName, heading: fullName, description: profile.seoDescription || defaultDescription, image: images.card, alt: `${fullName} business card` },
+  {
+    path: '/',
+    title: profile.seoTitle || fullName,
+    heading: fullName,
+    description: profile.seoDescription || defaultDescription,
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: renderPage(Home),
+  },
   {
     path: '/projects',
     title: `Projects · ${fullName}`,
@@ -178,13 +206,21 @@ const pages = [
     body: projectsBody(),
     jsonLd: [breadcrumbs([['Projects', '/projects']])],
   },
-  { path: '/privacy', title: `Privacy Policy · ${fullName}`, description: `Privacy policy for ${fullName}'s website and apps.`, image: images.card, alt: `${fullName} business card` },
+  {
+    path: '/privacy',
+    title: `Privacy Policy · ${fullName}`,
+    description: `Privacy policy for ${fullName}'s website and apps.`,
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: renderPage(PrivacyPage),
+  },
   {
     path: '/photography',
     title: `Photography · ${fullName}`,
     description: photography.intro,
     image: firstAlbum ? photoImage(coverOf(firstAlbum)) : images.card,
     alt: `Photography by ${fullName}`,
+    body: renderPage(PhotographyPage),
   },
   ...projectPages.map((p) => ({
     path: `/projects/${p.slug}`,
@@ -205,6 +241,7 @@ const pages = [
         description: album.description ? `${album.description} ${count} by ${fullName}.` : `${count} by ${fullName}.`,
         image: photoImage(coverOf(album)),
         alt: `${album.title} gallery`,
+        body: renderPage(AlbumPage, { album }),
       },
       ...album.photos.map((photo) => ({
         path: `${albumPath}/${photo.name}`,
@@ -212,10 +249,14 @@ const pages = [
         description: `Photo by ${fullName}, from the ${album.title} gallery.`,
         image: photoImage(photo),
         alt: photo.alt,
+        body: renderPage(AlbumPage, { album, photoName: photo.name }),
       })),
     ]
   }),
 ]
+
+await vite.close()
+delete globalThis.window
 
 // ── Structured data ─────────────────────────────────────────────────────
 // Tells Google who the site is about, so searches for the name + city match.
