@@ -6,6 +6,7 @@ import Link from './components/Link'
 import Starfield from './fx/Starfield'
 import useKonami from './fx/useKonami'
 import CommandPalette from './fx/CommandPalette'
+import { startAsteroids } from './fx/asteroids'
 import { iconFor } from './icons'
 import { confettiBurst, confettiCannons, fireworks, emojiRain } from './fx/celebrate'
 import Home from './pages/Home'
@@ -154,8 +155,12 @@ export default function App() {
   }, [pageKey])
 
   const unlock = useCallback(() => {
-    fireworks(5000)
-    emojiRain('🎮', 2500)
+    startAsteroids({
+      onClear: () => {
+        fireworks(4000)
+        emojiRain('🎮', 2500)
+      },
+    })
   }, [])
   useKonami(unlock)
 
@@ -236,6 +241,7 @@ export default function App() {
         { id: 'swords', icon: '⚔️', label: 'Sword rain', keywords: 'emoji ren faire cosplay', run: () => emojiRain('⚔️') },
         { id: 'games', icon: '🎮', label: 'Controller rain', keywords: 'emoji games', run: () => emojiRain('🎮') },
         { id: 'hearts', icon: '❤️', label: 'Heart rain', keywords: 'emoji love', run: () => emojiRain('❤️') },
+        { id: 'asteroids', icon: '🚀', label: 'Asteroids (blast the page)', keywords: 'game konami ship shoot space', run: () => setTimeout(unlock, 50) },
         { id: 'flip', icon: '🙃', label: 'Flip the page', keywords: 'upside down rotate', run: flipPage },
         {
           id: 'party',
