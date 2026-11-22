@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         <h2>The short version</h2>
         <p>
           <strong>My apps don't collect your data, and I never sell it.</strong> This website uses Google
-          Analytics to count visits and see which pages are popular.
+          Analytics to count visits and see which pages are popular, and Google AdSense to show ads.
         </p>
 
         <h2>Apps</h2>
@@ -75,6 +75,33 @@ export default function PrivacyPage() {
             .
           </li>
           <li>I don't sell, rent, or share this information with anyone else.</li>
+        </ul>
+
+        <h2>Advertising</h2>
+        <ul>
+          <li>
+            This site shows ads through Google AdSense. Google and other third-party ad vendors use cookies
+            to serve ads based on your previous visits to this site and other websites.
+          </li>
+          <li>
+            Google's advertising cookies let Google and its partners serve ads based on your visits to this
+            and other sites. Read more about{' '}
+            <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">
+              how Google uses cookies in advertising
+            </a>
+            .
+          </li>
+          <li>
+            You can turn off personalized ads in{' '}
+            <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">
+              Google's Ad Settings
+            </a>
+            , or opt out of personalized ads from many other vendors at{' '}
+            <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">
+              aboutads.info
+            </a>
+            .
+          </li>
         </ul>
 
         <h2>Changes</h2>
