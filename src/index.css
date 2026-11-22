@@ -834,6 +834,92 @@ html.is-flipped body { transform: rotate(180deg); }
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.is-visible { opacity: 1; transform: none; }
 
+/* ── SQL tutorials ── */
+.prose code, .section-lead code {
+  font-family: var(--mono); font-size: 0.88em; padding: 1px 6px; border-radius: 6px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--blue-2);
+}
+.sqllist { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.sqllist__card {
+  display: flex; flex-direction: column; gap: 8px; height: 100%; padding: 24px; border-radius: var(--radius);
+  background: linear-gradient(160deg, var(--surface), var(--bg-2)); border: 1px solid var(--border);
+  color: var(--text); transition: border-color 0.2s, transform 0.2s;
+}
+.sqllist__card:hover { border-color: var(--blue-2); transform: translateY(-3px); }
+.sqllist__card h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.01em; }
+.sqllist__card p { margin: 0; color: var(--muted); flex: 1; }
+.sqllist__card--play { border-style: dashed; }
+.sqllist__meta { color: var(--red-2); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; }
+.sqllist__go { color: var(--blue-2); font-size: 0.8rem; }
+
+.sqlbar {
+  position: sticky; top: 76px; z-index: 5; margin-bottom: 12px; padding: 12px 16px; border-radius: 14px;
+  background: rgba(13, 20, 48, 0.92); border: 1px solid var(--border); backdrop-filter: blur(8px);
+}
+.sqlbar__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.sqlbar__status { display: inline-flex; align-items: center; gap: 10px; font-size: 0.92rem; color: var(--muted); }
+.sqlbar__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+.sqlbar__status.is-loading .sqlbar__dot { background: #fbbf24; animation: sql-pulse 1s ease-in-out infinite; }
+.sqlbar__status.is-ready .sqlbar__dot { background: #34d399; }
+.sqlbar__status.is-ready { color: var(--text); }
+.sqlbar__status.is-error { color: var(--red-2); }
+.sqlbar__status.is-error .sqlbar__dot { background: var(--red); }
+@keyframes sql-pulse { 50% { opacity: 0.3; } }
+.sqlbar__schema summary { cursor: pointer; margin-top: 8px; color: var(--blue-2); font-size: 0.88rem; }
+.sqlbar__tables {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px;
+  margin-top: 10px; max-height: 45vh; overflow: auto;
+}
+.sqlbar__table strong { font-size: 0.85rem; color: var(--text); }
+.sqlbar__table ul { list-style: none; margin: 4px 0 0; padding: 0; }
+.sqlbar__table li { font-size: 0.75rem; color: #c7cee6; }
+.sqlbar__table .muted { color: var(--muted); }
+
+.sqlsteps { max-width: 900px; }
+.sqlstep h2 { margin-top: 44px; }
+.sqlrunner { margin: 18px 0 8px; }
+.sqlrunner__task {
+  margin: 0 0 10px; padding: 12px 14px; border-radius: 12px; border-left: 3px solid var(--red-2);
+  background: rgba(251, 113, 133, 0.08);
+}
+.sqlrunner__task .mono { color: var(--red-2); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.72rem; margin-right: 6px; }
+.sqlrunner__editor {
+  display: block; width: 100%; resize: vertical; padding: 14px 16px; border-radius: 12px;
+  background: #050816; color: #e8ecf8; border: 1px solid var(--border); font-size: 0.92rem; line-height: 1.55;
+  tab-size: 2; white-space: pre; overflow-x: auto;
+}
+.sqlrunner__editor:focus { outline: none; border-color: var(--blue-2); box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15); }
+.sqlrunner__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.sqlrunner__actions .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.sqlrunner__link {
+  background: none; border: 0; padding: 4px; color: var(--muted); cursor: pointer; font: inherit; font-size: 0.88rem;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.sqlrunner__link:hover { color: var(--text); }
+.sqlrunner__hint { margin-left: auto; color: var(--muted); font-size: 0.72rem; }
+.sqlrunner__verdict { margin: 12px 0 0; padding: 10px 14px; border-radius: 10px; font-weight: 600; }
+.sqlrunner__verdict.is-right { background: rgba(52, 211, 153, 0.12); color: #6ee7b7; }
+.sqlrunner__verdict.is-wrong { background: rgba(251, 191, 36, 0.12); color: #fcd34d; }
+.sqlrunner__error {
+  margin: 12px 0 0; padding: 12px 14px; border-radius: 10px; white-space: pre-wrap;
+  background: rgba(239, 68, 68, 0.1); color: var(--red-2); font-size: 0.85rem;
+}
+.sqlrunner__time { margin: 6px 0 0; color: var(--muted); font-size: 0.7rem; text-align: right; }
+.sqlresult { margin-top: 12px; }
+.sqlresult__scroll { overflow: auto; max-height: 420px; border: 1px solid var(--border); border-radius: 12px; }
+.sqlresult table { border-collapse: collapse; width: 100%; font-family: var(--mono); font-size: 0.8rem; }
+.sqlresult th, .sqlresult td { padding: 7px 12px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
+.sqlresult th { position: sticky; top: 0; background: var(--surface); color: var(--blue-2); font-weight: 500; }
+.sqlresult tr:last-child td { border-bottom: 0; }
+.sqlresult tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+.sqlresult td.is-null { color: var(--muted); font-style: italic; }
+.sqlresult td.is-num { text-align: right; }
+.sqlresult__note { margin: 6px 0 0; color: var(--muted); font-size: 0.75rem; }
+.prose .sqlresult__note, .prose .sqlrunner__time { font-size: 0.75rem; color: var(--muted); }
+.sqlnext { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 48px; }
+.sqlpick { display: inline-flex; gap: 10px; align-items: center; margin-top: 18px; color: var(--muted); }
+.sqlpick select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font: inherit; }
+
 /* Asteroids easter egg (src/fx/asteroids.js) */
 html.ast-on { scroll-behavior: auto; }
 html.ast-on .reveal:not(.ast-dead) { opacity: 1; }

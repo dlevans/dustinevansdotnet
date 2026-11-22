@@ -93,4 +93,6 @@ export default defineConfig({
     servePhotos(),
     autoProcessPhotos(),
   ],
+  // PGlite (Postgres for the SQL tutorials) loads its own .wasm/.data files and breaks if pre-bundled
+  optimizeDeps: { exclude: ['@electric-sql/pglite'] },
 })

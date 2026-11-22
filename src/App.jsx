@@ -16,6 +16,8 @@ import NotFound from './pages/NotFound'
 import PrivacyPage from './pages/PrivacyPage'
 import AlbumPage from './pages/AlbumPage'
 import ProjectPage from './pages/ProjectPage'
+import { SqlIndexPage, SqlTutorialPage, SqlPlaygroundPage } from './pages/SqlPages'
+import { sqlTutorials } from './data/sqlTutorials'
 
 const fullName = `${profile.firstName} ${profile.lastName}`
 
@@ -24,6 +26,8 @@ const routes = {
   '/projects': { page: ProjectsPage, title: `Projects · ${fullName}` },
   '/photography': { page: PhotographyPage, title: `Photography · ${fullName}` },
   '/privacy': { page: PrivacyPage, title: `Privacy Policy · ${fullName}` },
+  '/sql': { page: SqlIndexPage, title: `SQL Tutorials · ${fullName}` },
+  '/sql/playground': { page: SqlPlaygroundPage, title: `SQL Playground · ${fullName}` },
 }
 
 /** Find the page for a path, including /projects/<slug> and /photography/<album> pages. */
@@ -33,6 +37,11 @@ function resolve(path) {
   const project = projectMatch && projects.find((p) => p.slug === projectMatch[1])
   if (project) {
     return { page: ProjectPage, props: { project }, title: `${project.seoTitle || project.title} · ${fullName}` }
+  }
+  const sqlMatch = path.match(/^\/sql\/([^/]+)$/)
+  const tutorial = sqlMatch && sqlTutorials.find((t) => t.slug === sqlMatch[1])
+  if (tutorial) {
+    return { page: SqlTutorialPage, props: { tutorial }, title: `${tutorial.title} · SQL Tutorials · ${fullName}` }
   }
   const m = path.match(/^\/photography\/([^/]+)(?:\/([^/]+))?$/)
   const album = m && photography.albums.find((a) => a.slug === m[1])
@@ -58,6 +67,7 @@ function Nav({ onSearch, path }) {
     ['About', '/#about'],
     ['Projects', '/projects'],
     photography.albums.length ? ['Photography', '/photography'] : null,
+    ['SQL', '/sql'],
     experience.length ? ['Experience', '/#experience'] : null,
     ['Contact', '/#contact'],
   ].filter(Boolean)
@@ -209,6 +219,19 @@ export default function App() {
         hint: p.slug ? '' : p.link ? `${(p.linkLabel || 'live').toLowerCase()} ↗` : p.repo ? 'code ↗' : '',
         run: p.slug ? go(`/projects/${p.slug}`) : p.link || p.repo ? openUrl(p.link || p.repo) : go('/projects'),
       })),
+    },
+    {
+      heading: 'SQL tutorials',
+      items: [
+        ...sqlTutorials.map((t) => ({
+          id: `sql-${t.slug}`,
+          icon: '🗄️',
+          label: t.title,
+          keywords: `sql postgres tutorial learn database query ${t.level}`,
+          run: go(`/sql/${t.slug}`),
+        })),
+        { id: 'sql-play', icon: '⌨️', label: 'SQL playground', keywords: 'sql postgres editor query database', run: go('/sql/playground') },
+      ],
     },
     {
       heading: 'Photo galleries',

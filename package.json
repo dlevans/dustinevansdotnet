@@ -13,6 +13,7 @@
     "photos": "python scripts/process_photos.py"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.5.17",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",

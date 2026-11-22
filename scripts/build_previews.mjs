@@ -11,6 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { profile, about, projects, photography, socials } from '../src/data/site.js'
+import { sqlTutorials } from '../src/data/sqlTutorials.js'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(root, 'dist')
@@ -183,6 +184,7 @@ const load = async (file) => (await vite.ssrLoadModule(file)).default
 const [Home, PrivacyPage, PhotographyPage, AlbumPage] = await Promise.all(
   ['Home', 'PrivacyPage', 'PhotographyPage', 'AlbumPage'].map((n) => load(`/src/pages/${n}.jsx`)),
 )
+const { SqlIndexPage, SqlTutorialPage, SqlPlaygroundPage } = await vite.ssrLoadModule('/src/pages/SqlPages.jsx')
 // Reveal-on-scroll sections start hidden until JavaScript runs; show them in the static copy.
 const renderPage = (Component, props) =>
   renderToStaticMarkup(createElement(Component, props)).replace(/class="reveal /g, 'class="reveal is-visible ')
@@ -222,6 +224,46 @@ const pages = [
     alt: `Photography by ${fullName}`,
     body: renderPage(PhotographyPage),
   },
+  {
+    path: '/sql',
+    title: `SQL Tutorials · ${fullName}`,
+    description: 'Free, hands-on SQL tutorials with a real Postgres database running in your browser. Edit and run queries, and check your answers.',
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: renderPage(SqlIndexPage),
+    jsonLd: [breadcrumbs([['SQL Tutorials', '/sql']])],
+  },
+  {
+    path: '/sql/playground',
+    title: `SQL Playground · ${fullName}`,
+    description: 'Write and run any SQL against a sample Postgres database, right in your browser.',
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: renderPage(SqlPlaygroundPage),
+    jsonLd: [breadcrumbs([['SQL Tutorials', '/sql'], ['Playground', '/sql/playground']])],
+  },
+  ...sqlTutorials.map((t) => ({
+    path: `/sql/${t.slug}`,
+    title: `${t.title} · SQL Tutorials · ${fullName}`,
+    description: t.description,
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: renderPage(SqlTutorialPage, { tutorial: t }),
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'LearningResource',
+        name: t.title,
+        description: t.description,
+        url: pageUrl(`/sql/${t.slug}`),
+        educationalLevel: t.level,
+        learningResourceType: 'Tutorial',
+        teaches: 'SQL',
+        author: { '@type': 'Person', '@id': personId, name: fullName, url: `${site}/` },
+      },
+      breadcrumbs([['SQL Tutorials', '/sql'], [t.title, `/sql/${t.slug}`]]),
+    ],
+  })),
   ...projectPages.map((p) => ({
     path: `/projects/${p.slug}`,
     title: `${p.seoTitle || p.title} · ${fullName}`,
