@@ -182,8 +182,8 @@ globalThis.window = {
   removeEventListener() {},
 }
 const load = async (file) => (await vite.ssrLoadModule(file)).default
-const [Home, PrivacyPage, PhotographyPage, AlbumPage, PressPage] = await Promise.all(
-  ['Home', 'PrivacyPage', 'PhotographyPage', 'AlbumPage', 'PressPage'].map((n) => load(`/src/pages/${n}.jsx`)),
+const [Home, PrivacyPage, PhotographyPage, AlbumPage, PressPage, ExperiencePage] = await Promise.all(
+  ['Home', 'PrivacyPage', 'PhotographyPage', 'AlbumPage', 'PressPage', 'ExperiencePage'].map((n) => load(`/src/pages/${n}.jsx`)),
 )
 const { SqlIndexPage, SqlTutorialPage, SqlPlaygroundPage } = await vite.ssrLoadModule('/src/pages/SqlPages.jsx')
 const { BlogIndexPage, BlogPostPage } = await vite.ssrLoadModule('/src/pages/BlogPages.jsx')
@@ -284,6 +284,15 @@ const pages = [
           }]
         : []),
     ],
+  },
+  {
+    path: '/experience',
+    title: `Experience · ${fullName}`,
+    description: `Where ${fullName} has worked: integrations and automation development, technical support, and 9-1-1 operations.`,
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: renderPage(ExperiencePage),
+    jsonLd: [breadcrumbs([['Experience', '/experience']])],
   },
   {
     path: '/photography',

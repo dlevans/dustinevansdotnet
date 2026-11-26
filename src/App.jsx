@@ -15,6 +15,7 @@ import PhotographyPage from './pages/PhotographyPage'
 import NotFound from './pages/NotFound'
 import PrivacyPage from './pages/PrivacyPage'
 import PressPage from './pages/PressPage'
+import ExperiencePage from './pages/ExperiencePage'
 import { BlogIndexPage, BlogPostPage } from './pages/BlogPages'
 import { posts } from './data/posts'
 import AlbumPage from './pages/AlbumPage'
@@ -30,6 +31,7 @@ const routes = {
   '/photography': { page: PhotographyPage, title: `Photography · ${fullName}` },
   '/privacy': { page: PrivacyPage, title: `Privacy Policy · ${fullName}` },
   '/press': { page: PressPage, title: `Press · ${fullName}` },
+  '/experience': { page: ExperiencePage, title: `Experience · ${fullName}` },
   '/blog': { page: BlogIndexPage, title: `Blog · ${fullName}` },
   '/sql': { page: SqlIndexPage, title: `SQL Tutorials · ${fullName}` },
   '/sql/playground': { page: SqlPlaygroundPage, title: `SQL Playground · ${fullName}` },
@@ -80,7 +82,7 @@ function Nav({ onSearch, path }) {
     posts.length ? ['Blog', '/blog'] : null,
     ['SQL', '/sql'],
     press.length ? ['Press', '/press'] : null,
-    experience.length ? ['Experience', '/#experience'] : null,
+    experience.length ? ['Experience', '/experience'] : null,
     ['Contact', '/#contact'],
   ].filter(Boolean)
   return (
@@ -217,7 +219,7 @@ export default function App() {
         photography.albums.length && { id: 'photos', icon: '📷', label: 'Photography', keywords: 'photos gallery pictures camera', run: go('/photography') },
         posts.length && { id: 'blog', icon: '✍️', label: 'Blog', keywords: 'posts writing notes', run: go('/blog') },
         press.length && { id: 'press', icon: '📰', label: 'In the press', keywords: 'articles news interviews media blog', run: go('/press') },
-        experience.length && { id: 'exp', icon: '💼', label: 'Experience', keywords: 'jobs career resume', run: go('/#experience') },
+        experience.length && { id: 'exp', icon: '💼', label: 'Experience', keywords: 'jobs career resume', run: go('/experience') },
         { id: 'contact', icon: '✉️', label: 'Contact', keywords: 'email connect', run: go('/#contact') },
         { id: 'privacy', icon: '🔒', label: 'Privacy Policy', keywords: 'legal android apps data', run: go('/privacy') },
         profile.resumeUrl && { id: 'resume', icon: '📄', label: 'Résumé', keywords: 'cv pdf', run: openUrl(profile.resumeUrl) },

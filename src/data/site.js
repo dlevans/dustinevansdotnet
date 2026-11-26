@@ -625,10 +625,13 @@ export const photography = {
 // Every photo across all albums (used for the home page "featured" picks)
 export const allPhotos = photography.albums.flatMap((a) => a.photos.map((p) => ({ ...p, album: a.slug })))
 
+// Work history, newest first. Shown in full on /experience.
+//   featured: true = also shown on the home page (up to 4)
 export const experience = [
   {
     role: 'Enterprise Integrations',
     company: 'VINCUE',
+    featured: true,
     period: 'Dec 2025 — Present',
     summary:
       'Architected an internal documentation portal and built custom Chrome extensions for Vincue and HubSpot, saving two teams ~1 hour/day. Maintain the documentation infrastructure that keeps critical workflows discoverable.',
@@ -643,6 +646,7 @@ export const experience = [
   {
     role: 'Enterprise Integrations Developer',
     company: 'Neu Analytics',
+    featured: true,
     period: 'Apr 2021 — Jul 2025',
     summary:
       'Built file-import validation that cut data quality issues by 20%, NSF payment reconciliation, hash-based change detection for delta transmissions, and C# bulk loaders for complex Excel datasets. Authored onboarding guides used across the team.',
@@ -657,6 +661,7 @@ export const experience = [
   {
     role: 'Tier II Technical Support',
     company: 'Ad Astra Information Systems',
+    featured: true,
     period: 'Jun 2015 — Oct 2018',
     summary:
       'Diagnosed issues across SQL Server and Oracle, maintained stored procedures and jobs, refined frontend UI, and configured SSO (LDAP, CAS, ADFS, Shibboleth).',
@@ -669,9 +674,10 @@ export const experience = [
   },
   {
     role: 'Night Shift Supervisor / Assistant System Administrator',
-    company: 'McPherson County',
+    company: 'McPherson County 9-1-1',
+    featured: true,
     period: 'Oct 2008 — Oct 2014',
-    summary: 'Supervised night operations and assisted with system administration.',
+    summary: 'Supervised night operations at the county 9-1-1 center and assisted with system administration.',
   },
 ]
 

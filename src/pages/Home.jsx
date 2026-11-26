@@ -6,6 +6,7 @@ import PhotoGrid from '../components/PhotoGrid'
 import { AlbumGrid } from '../components/AlbumCard'
 import Link from '../components/Link'
 import { PressCard } from './PressPage'
+import { Timeline } from './ExperiencePage'
 import LiveBadge from '../components/LiveBadge'
 import FlipWords from '../fx/FlipWords'
 import { iconFor } from '../icons'
@@ -150,21 +151,20 @@ function Press() {
 
 function Experience() {
   if (!experience.length) return null
+  const featured = experience.filter((j) => j.featured)
+  const items = (featured.length ? featured : experience).slice(0, 4)
   return (
     <section className="section" id="experience">
       <div className="container">
         <SectionTitle kicker="05 — experience" title="Where I've worked" />
-        <ol className="timeline">
-          {experience.map((job, i) => (
-            <Reveal as="li" key={i} delay={i * 100}>
-              <span className="timeline__period mono">{job.period}</span>
-              <h3>
-                {job.role} <span className="at">@ {job.company}</span>
-              </h3>
-              <p>{job.summary}</p>
-            </Reveal>
-          ))}
-        </ol>
+        <Timeline jobs={items} />
+        {experience.length > items.length && (
+          <Reveal className="section-more">
+            <Link to="/experience" className="btn btn--ghost">
+              View all {experience.length} roles →
+            </Link>
+          </Reveal>
+        )}
       </div>
     </section>
   )
