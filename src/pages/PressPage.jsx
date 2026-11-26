@@ -11,6 +11,26 @@ const host = (url) => {
   }
 }
 
+/** One article: outlet, date, headline, and summary, linking to the original. */
+export function PressCard({ article: p }) {
+  return (
+    <li className="press__item">
+      <a href={p.url} target="_blank" rel="noreferrer" className="press__link">
+        <p className="press__meta mono">
+          <span className="press__outlet">{p.outlet}</span>
+          <span>{formatDate(p.date)}</span>
+          {p.type && <span>{p.type}</span>}
+        </p>
+        <h3 className="press__title">
+          {p.title} <span aria-hidden>↗</span>
+        </h3>
+        {p.summary && <p className="press__summary">{p.summary}</p>}
+        <span className="press__host mono">{host(p.url)}</span>
+      </a>
+    </li>
+  )
+}
+
 export default function PressPage() {
   const years = [...new Set(press.map((p) => p.date.slice(0, 4)))]
 
@@ -38,20 +58,7 @@ export default function PressPage() {
                 {press
                   .filter((p) => p.date.startsWith(year))
                   .map((p) => (
-                    <li key={p.url} className="press__item">
-                      <a href={p.url} target="_blank" rel="noreferrer" className="press__link">
-                        <p className="press__meta mono">
-                          <span className="press__outlet">{p.outlet}</span>
-                          <span>{formatDate(p.date)}</span>
-                          {p.type && <span>{p.type}</span>}
-                        </p>
-                        <h3 className="press__title">
-                          {p.title} <span aria-hidden>↗</span>
-                        </h3>
-                        {p.summary && <p className="press__summary">{p.summary}</p>}
-                        <span className="press__host mono">{host(p.url)}</span>
-                      </a>
-                    </li>
+                    <PressCard key={p.url} article={p} />
                   ))}
               </ul>
             </Reveal>

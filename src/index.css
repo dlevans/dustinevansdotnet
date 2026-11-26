@@ -1058,3 +1058,8 @@ html.ast-on .reveal,
   .blog__pager-link--next { text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) { .blog__card:hover { transform: none; } }
+
+/* Home page: articles in two columns */
+.press__list--home { grid-template-columns: repeat(2, 1fr); }
+.press__list--home .press__link { height: 100%; }
+@media (max-width: 760px) { .press__list--home { grid-template-columns: 1fr; } }

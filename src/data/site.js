@@ -615,6 +615,9 @@ const albums = generatedPhotos
 export const photography = {
   intro: 'People, places, loud shows, and big events — the moments I happened to catch.', // TODO: your own words
   homeCount: 8,
+  // Galleries shown on the home page, in this order (slugs from albumInfo above).
+  // Empty = show every gallery.
+  homeAlbums: ['people', 'clearly-guilty', 'outdoors', 'vehicles'],
   instagram: 'https://www.instagram.com/dustinevansphoto/', // "More on Instagram" button
   albums,
 }
@@ -680,6 +683,7 @@ export const experience = [
 //   url:     link to the article
 //   type:    optional label, e.g. 'Article', 'Interview', 'Podcast', 'Video', 'TV'
 //   summary: optional one or two lines about what it covers, or a quote from it
+//   featured: true = also shown on the home page (up to 4)
 export const press = [
   {
     title: 'Maker Spotlight: Dustin Evans',
@@ -687,6 +691,7 @@ export const press = [
     date: '2019-08-20',
     url: 'https://makezine.com/article/maker-news/maker-spotlight-dustin-evans/',
     type: 'Interview',
+    featured: true,
     summary: 'A Q&A profile about getting started with an Arduino-lit coffee table, learning to code without formal training, and a 3D-printed portable NES.',
   },
   {
@@ -695,6 +700,7 @@ export const press = [
     date: '2014-07-02',
     url: 'https://hackaday.com/2014/07/02/broken-laptop-lives-again-in-skull-n-wrenches-arcade-cabinet/',
     type: 'Article',
+    featured: true,
     summary: 'An MDF arcade cabinet built around half of a broken laptop, running about 700 NES and SNES games. It won a Maker of Merit ribbon at Maker Faire Kansas City.',
   },
   {
@@ -711,6 +717,7 @@ export const press = [
     date: '2014-03-12',
     url: 'https://hackaday.com/2014/03/12/prop-replica-tesseract-case-has-some-serious-tech-inside/',
     type: 'Article',
+    featured: true,
     summary: 'A Tesseract case prop with an Arduino, a Raspberry Pi media center, a 7" screen, speakers, and NeoPixels inside an aluminum tool case.',
   },
   {
@@ -719,6 +726,7 @@ export const press = [
     date: '2012-07-30',
     url: 'https://www.engadget.com/2012-07-30-google-wallet-hack-hits-verizon-galaxy-s-iii.html',
     type: 'Article',
+    featured: true,
     summary: 'Getting Google Wallet running on the Verizon Galaxy S III, which Verizon didn’t support, with Mike Beauchamp.',
   },
   {

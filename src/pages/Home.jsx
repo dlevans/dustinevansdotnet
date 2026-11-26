@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { profile, about, projects, experience, socials, photography, allPhotos } from '../data/site'
+import { profile, about, projects, experience, socials, photography, allPhotos, press } from '../data/site'
 import { Reveal, SectionTitle } from '../components/Reveal'
 import { ProjectGrid } from '../components/ProjectCard'
 import PhotoGrid from '../components/PhotoGrid'
 import { AlbumGrid } from '../components/AlbumCard'
 import Link from '../components/Link'
+import { PressCard } from './PressPage'
 import LiveBadge from '../components/LiveBadge'
 import FlipWords from '../fx/FlipWords'
 import { iconFor } from '../icons'
@@ -93,8 +94,9 @@ function FeaturedProjects() {
 }
 
 function Photography() {
-  const { intro, albums, homeCount = 8, instagram } = photography
+  const { intro, albums, homeCount = 8, homeAlbums = [], instagram } = photography
   if (!albums.length) return null
+  const picked = homeAlbums.map((slug) => albums.find((a) => a.slug === slug)).filter(Boolean)
   // Show featured photos if there are any, otherwise the album covers
   const featured = allPhotos.filter((p) => p.featured).slice(0, homeCount)
   return (
@@ -104,7 +106,7 @@ function Photography() {
           {intro && <p className="section-lead">{intro}</p>}
         </SectionTitle>
         <Reveal>
-          {featured.length ? <PhotoGrid photos={featured} /> : <AlbumGrid albums={albums} />}
+          {featured.length ? <PhotoGrid photos={featured} /> : <AlbumGrid albums={picked.length ? picked : albums} />}
         </Reveal>
         <Reveal className="section-more">
           <Link to="/photography" className="btn btn--ghost">
@@ -121,12 +123,37 @@ function Photography() {
   )
 }
 
+function Press() {
+  if (!press.length) return null
+  const featured = press.filter((p) => p.featured)
+  const items = (featured.length ? featured : press).slice(0, 4)
+  return (
+    <section className="section" id="press">
+      <div className="container">
+        <SectionTitle kicker="04 — press" title="In the press" />
+        <Reveal as="ul" className="press__list press__list--home">
+          {items.map((p) => (
+            <PressCard key={p.url} article={p} />
+          ))}
+        </Reveal>
+        {press.length > items.length && (
+          <Reveal className="section-more">
+            <Link to="/press" className="btn btn--ghost">
+              View all {press.length} articles →
+            </Link>
+          </Reveal>
+        )}
+      </div>
+    </section>
+  )
+}
+
 function Experience() {
   if (!experience.length) return null
   return (
     <section className="section" id="experience">
       <div className="container">
-        <SectionTitle kicker="04 — experience" title="Where I've worked" />
+        <SectionTitle kicker="05 — experience" title="Where I've worked" />
         <ol className="timeline">
           {experience.map((job, i) => (
             <Reveal as="li" key={i} delay={i * 100}>
@@ -183,7 +210,7 @@ function Contact() {
     <section className="section contact" id="contact">
       <div className="container">
         <Reveal>
-          <p className="mono kicker">05 — contact</p>
+          <p className="mono kicker">06 — contact</p>
           <h2 className="contact__title">
             That's a wrap! <br />
             <span className="gradient-text">Let's connect.</span>
@@ -213,6 +240,7 @@ export default function Home() {
       <About />
       <FeaturedProjects />
       <Photography />
+      <Press />
       <Experience />
       <StatusWindow />
       <Contact />
