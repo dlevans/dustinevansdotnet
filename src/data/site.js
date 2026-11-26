@@ -721,12 +721,20 @@ export const press = [
     summary: 'A Tesseract case prop with an Arduino, a Raspberry Pi media center, a 7" screen, speakers, and NeoPixels inside an aluminum tool case.',
   },
   {
+    title: 'Photo of the Week: Star Trails Over Coronado Heights',
+    outlet: 'Smithsonian Mag',
+    date: '2012-21-12',
+    url: 'https://www.smithsonianmag.com/multimedia/photo-of-the-week-star-trails-over-coronado-heights-26007/',
+    type: 'Article',
+    featured: true,
+    summary: 'This beautiful long exposure by photo contest contestant Mike Beauchamp captures the night sky as it circles around Polaris, the North Star.',
+  },
+  {
     title: 'Google Wallet hack hits Verizon Galaxy S III',
     outlet: 'Engadget',
     date: '2012-07-30',
     url: 'https://www.engadget.com/2012-07-30-google-wallet-hack-hits-verizon-galaxy-s-iii.html',
     type: 'Article',
-    featured: true,
     summary: 'Getting Google Wallet running on the Verizon Galaxy S III, which Verizon didn’t support, with Mike Beauchamp.',
   },
   {
