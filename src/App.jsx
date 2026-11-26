@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { profile, projects, experience, socials, photography } from './data/site'
+import { profile, projects, experience, socials, photography, press } from './data/site'
 import { useLocation, navigate, cleanPath } from './router'
 import Link from './components/Link'
 import Starfield from './fx/Starfield'
@@ -14,6 +14,9 @@ import ProjectsPage from './pages/ProjectsPage'
 import PhotographyPage from './pages/PhotographyPage'
 import NotFound from './pages/NotFound'
 import PrivacyPage from './pages/PrivacyPage'
+import PressPage from './pages/PressPage'
+import { BlogIndexPage, BlogPostPage } from './pages/BlogPages'
+import { posts } from './data/posts'
 import AlbumPage from './pages/AlbumPage'
 import ProjectPage from './pages/ProjectPage'
 import { SqlIndexPage, SqlTutorialPage, SqlPlaygroundPage } from './pages/SqlPages'
@@ -26,6 +29,8 @@ const routes = {
   '/projects': { page: ProjectsPage, title: `Projects · ${fullName}` },
   '/photography': { page: PhotographyPage, title: `Photography · ${fullName}` },
   '/privacy': { page: PrivacyPage, title: `Privacy Policy · ${fullName}` },
+  '/press': { page: PressPage, title: `Press · ${fullName}` },
+  '/blog': { page: BlogIndexPage, title: `Blog · ${fullName}` },
   '/sql': { page: SqlIndexPage, title: `SQL Tutorials · ${fullName}` },
   '/sql/playground': { page: SqlPlaygroundPage, title: `SQL Playground · ${fullName}` },
 }
@@ -37,6 +42,11 @@ function resolve(path) {
   const project = projectMatch && projects.find((p) => p.slug === projectMatch[1])
   if (project) {
     return { page: ProjectPage, props: { project }, title: `${project.seoTitle || project.title} · ${fullName}` }
+  }
+  const blogMatch = path.match(/^\/blog\/([^/]+)$/)
+  const post = blogMatch && posts.find((p) => p.slug === blogMatch[1])
+  if (post) {
+    return { page: BlogPostPage, props: { post }, title: `${post.title} · ${fullName}` }
   }
   const sqlMatch = path.match(/^\/sql\/([^/]+)$/)
   const tutorial = sqlMatch && sqlTutorials.find((t) => t.slug === sqlMatch[1])
@@ -67,7 +77,9 @@ function Nav({ onSearch, path }) {
     ['About', '/#about'],
     ['Projects', '/projects'],
     photography.albums.length ? ['Photography', '/photography'] : null,
+    posts.length ? ['Blog', '/blog'] : null,
     ['SQL', '/sql'],
+    press.length ? ['Press', '/press'] : null,
     experience.length ? ['Experience', '/#experience'] : null,
     ['Contact', '/#contact'],
   ].filter(Boolean)
@@ -203,6 +215,8 @@ export default function App() {
         { id: 'about', icon: '👋', label: 'About me', keywords: 'bio skills', run: go('/#about') },
         { id: 'work', icon: '🧰', label: 'All projects', keywords: 'work showcase crafts portfolio', run: go('/projects') },
         photography.albums.length && { id: 'photos', icon: '📷', label: 'Photography', keywords: 'photos gallery pictures camera', run: go('/photography') },
+        posts.length && { id: 'blog', icon: '✍️', label: 'Blog', keywords: 'posts writing notes', run: go('/blog') },
+        press.length && { id: 'press', icon: '📰', label: 'In the press', keywords: 'articles news interviews media blog', run: go('/press') },
         experience.length && { id: 'exp', icon: '💼', label: 'Experience', keywords: 'jobs career resume', run: go('/#experience') },
         { id: 'contact', icon: '✉️', label: 'Contact', keywords: 'email connect', run: go('/#contact') },
         { id: 'privacy', icon: '🔒', label: 'Privacy Policy', keywords: 'legal android apps data', run: go('/privacy') },
@@ -232,6 +246,28 @@ export default function App() {
         })),
         { id: 'sql-play', icon: '⌨️', label: 'SQL playground', keywords: 'sql postgres editor query database', run: go('/sql/playground') },
       ],
+    },
+    {
+      heading: 'Blog posts',
+      items: posts.map((p) => ({
+        id: `post-${p.slug}`,
+        icon: '✍️',
+        label: p.title,
+        keywords: `blog post ${p.tags.join(' ')} ${p.description}`,
+        hint: p.date,
+        run: go(`/blog/${p.slug}`),
+      })),
+    },
+    {
+      heading: 'Press',
+      items: press.map((a, i) => ({
+        id: `press-${i}`,
+        icon: '📰',
+        label: a.title,
+        keywords: `press article news ${a.outlet} ${a.type || ''}`,
+        hint: `${a.outlet} ↗`,
+        run: openUrl(a.url),
+      })),
     },
     {
       heading: 'Photo galleries',

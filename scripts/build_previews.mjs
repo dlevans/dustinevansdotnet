@@ -10,7 +10,7 @@ import { createServer } from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { profile, about, projects, photography, socials } from '../src/data/site.js'
+import { profile, about, projects, photography, socials, press } from '../src/data/site.js'
 import { sqlTutorials } from '../src/data/sqlTutorials.js'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -176,15 +176,18 @@ function projectsBody() {
 const vite = await createServer({ root, logLevel: 'error', server: { middlewareMode: true }, appType: 'custom' })
 // Just enough of `window` for the components that read it while rendering
 globalThis.window = {
+  __PRERENDER__: true, // keeps draft blog posts out of the built site
   location: { host: new URL(site).host, search: '', pathname: '/', hash: '' },
   addEventListener() {},
   removeEventListener() {},
 }
 const load = async (file) => (await vite.ssrLoadModule(file)).default
-const [Home, PrivacyPage, PhotographyPage, AlbumPage] = await Promise.all(
-  ['Home', 'PrivacyPage', 'PhotographyPage', 'AlbumPage'].map((n) => load(`/src/pages/${n}.jsx`)),
+const [Home, PrivacyPage, PhotographyPage, AlbumPage, PressPage] = await Promise.all(
+  ['Home', 'PrivacyPage', 'PhotographyPage', 'AlbumPage', 'PressPage'].map((n) => load(`/src/pages/${n}.jsx`)),
 )
 const { SqlIndexPage, SqlTutorialPage, SqlPlaygroundPage } = await vite.ssrLoadModule('/src/pages/SqlPages.jsx')
+const { BlogIndexPage, BlogPostPage } = await vite.ssrLoadModule('/src/pages/BlogPages.jsx')
+const { posts } = await vite.ssrLoadModule('/src/data/posts.js')
 // Reveal-on-scroll sections start hidden until JavaScript runs; show them in the static copy.
 const renderPage = (Component, props) =>
   renderToStaticMarkup(createElement(Component, props)).replace(/class="reveal /g, 'class="reveal is-visible ')
@@ -215,6 +218,72 @@ const pages = [
     image: images.card,
     alt: `${fullName} business card`,
     body: renderPage(PrivacyPage),
+  },
+  ...(posts.length
+    ? [
+        {
+          path: '/blog',
+          title: `Blog · ${fullName}`,
+          description: `Notes from ${fullName} on building, fixing, and learning things, written along the way.`,
+          image: images.card,
+          alt: `${fullName} business card`,
+          body: renderPage(BlogIndexPage),
+          jsonLd: [breadcrumbs([['Blog', '/blog']])],
+        },
+      ]
+    : []),
+  ...posts.map((post) => ({
+    path: `/blog/${post.slug}`,
+    title: `${post.title} · ${fullName}`,
+    description: post.description || post.title,
+    image: post.image || images.card,
+    alt: post.image ? post.title : `${fullName} business card`,
+    type: 'article',
+    body: renderPage(BlogPostPage, { post }),
+    jsonLd: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.description,
+        url: pageUrl(`/blog/${post.slug}`),
+        ...(post.date && { datePublished: post.date }),
+        ...(post.image && { image: imageUrl(post.image) }),
+        keywords: post.tags.join(', '),
+        author: { '@type': 'Person', '@id': personId, name: fullName, url: `${site}/` },
+      },
+      breadcrumbs([['Blog', '/blog'], [post.title, `/blog/${post.slug}`]]),
+    ],
+  })),
+  {
+    path: '/press',
+    title: `Press · ${fullName}`,
+    description: `Press coverage featuring ${fullName}: articles, interviews, and more over the years.`,
+    image: images.card,
+    alt: `${fullName} business card`,
+    body: renderPage(PressPage),
+    jsonLd: [
+      breadcrumbs([['Press', '/press']]),
+      ...(press.length
+        ? [{
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: `${fullName} in the press`,
+            itemListElement: press.map((a, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              item: {
+                '@type': 'Article',
+                headline: a.title,
+                url: a.url,
+                datePublished: a.date,
+                publisher: { '@type': 'Organization', name: a.outlet },
+                about: { '@type': 'Person', '@id': personId },
+              },
+            })),
+          }]
+        : []),
+    ],
   },
   {
     path: '/photography',
@@ -332,7 +401,7 @@ function render(page) {
   const alt = escapeHtml(page.alt)
   const tags = [
     `<link rel="canonical" href="${escapeHtml(url)}" />`,
-    `<meta property="og:type" content="website" />`,
+    `<meta property="og:type" content="${page.type || 'website'}" />`,
     `<meta property="og:site_name" content="${escapeHtml(fullName)}" />`,
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${description}" />`,
@@ -347,6 +416,9 @@ function render(page) {
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${image}" />`,
   ]
+  if (posts.length) {
+    tags.push(`<link rel="alternate" type="application/rss+xml" title="${escapeHtml(fullName)} · Blog" href="${site}/blog/feed.xml" />`)
+  }
   const jsonLd = page.path === '/' ? [personJsonLd()] : page.jsonLd || []
   // Escape "<" so nothing in the data can close the <script> tag early.
   for (const data of jsonLd) tags.push(`<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`)
@@ -374,6 +446,33 @@ const sitemap = [
   '',
 ].join('\n')
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap)
+// RSS feed, so people can follow the blog in a feed reader
+if (posts.length) {
+  const rssDate = (d) => new Date(`${d.padEnd(10, d.length === 4 ? '-01-01' : '-01').slice(0, 10)}T12:00:00Z`).toUTCString()
+  const items = posts.map((post) => {
+    const url = escapeHtml(pageUrl(`/blog/${post.slug}`))
+    return [
+      '    <item>',
+      `      <title>${escapeHtml(post.title)}</title>`,
+      `      <link>${url}</link>`,
+      `      <guid>${url}</guid>`,
+      post.date && `      <pubDate>${rssDate(post.date)}</pubDate>`,
+      `      <description>${escapeHtml(post.description || '')}</description>`,
+      '    </item>',
+    ].filter(Boolean).join('\n')
+  })
+  const rss = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<rss version="2.0"><channel>',
+    `  <title>${escapeHtml(fullName)} · Blog</title>`,
+    `  <link>${escapeHtml(pageUrl('/blog'))}</link>`,
+    `  <description>Notes on building, fixing, and learning things.</description>`,
+    ...items,
+    '</channel></rss>',
+    '',
+  ].join('\n')
+  fs.writeFileSync(path.join(dist, 'blog', 'feed.xml'), rss)
+}
 fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${site}/sitemap.xml\n`)
 
 console.log(`Link previews: ${pages.length} pages, ${Object.keys(images).length} images in dist/share/`)

@@ -672,6 +672,88 @@ export const experience = [
   },
 ]
 
+// Press — articles, interviews, podcasts, and videos about you. Shown on /press,
+// newest first and grouped by year. The "Press" nav link appears once this has entries.
+//   title:   the article's headline
+//   outlet:  who published it, e.g. 'The Kansas City Star'
+//   date:    'YYYY-MM-DD' (or 'YYYY-MM' / 'YYYY' if you don't know the exact day)
+//   url:     link to the article
+//   type:    optional label, e.g. 'Article', 'Interview', 'Podcast', 'Video', 'TV'
+//   summary: optional one or two lines about what it covers, or a quote from it
+export const press = [
+  {
+    title: 'Maker Spotlight: Dustin Evans',
+    outlet: 'Make:',
+    date: '2019-08-20',
+    url: 'https://makezine.com/article/maker-news/maker-spotlight-dustin-evans/',
+    type: 'Interview',
+    summary: 'A Q&A profile about getting started with an Arduino-lit coffee table, learning to code without formal training, and a 3D-printed portable NES.',
+  },
+  {
+    title: "Broken Laptop Lives Again In Skull 'n Wrenches Arcade Cabinet",
+    outlet: 'Hackaday',
+    date: '2014-07-02',
+    url: 'https://hackaday.com/2014/07/02/broken-laptop-lives-again-in-skull-n-wrenches-arcade-cabinet/',
+    type: 'Article',
+    summary: 'An MDF arcade cabinet built around half of a broken laptop, running about 700 NES and SNES games. It won a Maker of Merit ribbon at Maker Faire Kansas City.',
+  },
+  {
+    title: 'Magic In The Midwest: Maker Faire Kansas City',
+    outlet: 'Hackaday',
+    date: '2014-07-01',
+    url: 'https://hackaday.com/2014/07/01/magic-in-the-midwest-maker-faire-kansas-city/',
+    type: 'Article',
+    summary: 'Hackaday’s Maker Faire Kansas City recap, including the homebrew arcade cabinet.',
+  },
+  {
+    title: 'Prop Replica Tesseract Case Has Some Serious Tech Inside',
+    outlet: 'Hackaday',
+    date: '2014-03-12',
+    url: 'https://hackaday.com/2014/03/12/prop-replica-tesseract-case-has-some-serious-tech-inside/',
+    type: 'Article',
+    summary: 'A Tesseract case prop with an Arduino, a Raspberry Pi media center, a 7" screen, speakers, and NeoPixels inside an aluminum tool case.',
+  },
+  {
+    title: 'Google Wallet hack hits Verizon Galaxy S III',
+    outlet: 'Engadget',
+    date: '2012-07-30',
+    url: 'https://www.engadget.com/2012-07-30-google-wallet-hack-hits-verizon-galaxy-s-iii.html',
+    type: 'Article',
+    summary: 'Getting Google Wallet running on the Verizon Galaxy S III, which Verizon didn’t support, with Mike Beauchamp.',
+  },
+  {
+    title: 'Google Wallet Hack Brings Support for Verizon Galaxy S III',
+    outlet: 'Gotta Be Mobile',
+    date: '2012-07-30',
+    url: 'https://www.gottabemobile.com/google-wallet-hack-arrives-for-verizon-galaxy-s-iii/',
+    type: 'Article',
+    summary: 'Coverage of the Google Wallet hack for the Verizon Galaxy S III, including the setup instructions.',
+  },
+  {
+    title: 'Load Google Wallet onto Verizon’s Galaxy S III with this new hack',
+    outlet: 'TechSpot',
+    date: '2012-07',
+    url: 'https://www.techspot.com/news/49578-load-google-wallet-onto-verizons-galaxy-s-iii-with-this-new-hack.html',
+    type: 'Article',
+  },
+  {
+    title: 'NES Controllers For Any Bluetooth Application',
+    outlet: 'Hackaday',
+    date: '2012-06-01',
+    url: 'https://hackaday.com/2012/06/01/nes-controllers-for-any-bluetooth-application/',
+    type: 'Article',
+    summary: 'An Arduino and a Bluetooth modem inside an old NES shell, so original NES controllers work with phones and emulators.',
+  },
+  {
+    title: 'Daft Punk Table With iPod Dock',
+    outlet: 'Hackaday',
+    date: '2010-09-18',
+    url: 'https://hackaday.com/2010/09/18/daft-punk-table-with-ipod-dock/',
+    type: 'Article',
+    summary: 'A table with a hand-soldered 8×8 LED grid driven by an Arduino, plus an iPod dock and speakers.',
+  },
+].sort((a, b) => b.date.localeCompare(a.date))
+
 // `icon` options: github, email, twitch, youtube, instagram, tiktok, bluesky, linkedin
 // Links with an empty `url` are hidden until you fill them in.
 export const socials = [
